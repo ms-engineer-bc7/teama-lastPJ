@@ -83,6 +83,6 @@
 ### 経験談関連
 
 - `GET /testimonials`: 経験談一覧取得
-- `POST /testimonials`: 経験談一覧取得
+- `POST /testimonials`: 経験談一覧追加
 - `POST /testimonials`: 経験談追加
 - `DELETE /testimonials/{id}`: 経験談削除
