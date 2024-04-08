@@ -1,0 +1,19 @@
+{
+  "eslint.workingDirectories": ["./front"],
+  "eslint.options": {
+    "extensions": [".js", ".jsx", ".ts", ".tsx"]
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
+  "python.formatting.provider": "black",
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": false,
+  "python.linting.flake8Enabled": true
+}
