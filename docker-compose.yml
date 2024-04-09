@@ -28,6 +28,12 @@ services:
     build: ./front
     ports:
       - "3000:3000"
+    volumes:
+      - ./front:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run dev
+    environment:
+      - WATCHPACK_POLLING=true # ポーリングを有効にする
     depends_on:
       - backend
 
