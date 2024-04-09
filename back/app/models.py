@@ -1,3 +1,56 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.utils.translation import gettext_lazy as _
 
-# Create your models here.
+class User(AbstractUser):
+    # AbstractUserには既にusername, email, first_name, last_nameが含まれる
+    # それらのフィールドは再定義しないようにする。
+    ROLE_CHOICES = (
+        ('user', _('女性')),
+        ('partner', _('パートナー')),
+    )
+    role = models.CharField(max_length=7, choices=ROLE_CHOICES, blank=True)
+
+    def __str__(self):
+        return self.username  # AbstractUserにはusernameフィールドが既にあるため
+
+class Event(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    tag = models.CharField(max_length=50, blank=True, null=True)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    hide_from_hr = models.BooleanField(default=False)
+    alert_message_for_u = models.TextField(blank=True, null=True)
+    alert_message_for_p = models.TextField(blank=True, null=True)
+    alert_time = models.DateTimeField(blank=True, null=True)
+
+    def __str__(self):
+        return f"{self.title} - {self.start_date.strftime('%Y-%m-%d')}"
+
+class Cost(models.Model):
+    treatment_type = models.CharField(max_length=100)
+    insurance_coverage = models.TextField(blank=True, null=True)
+    cost_details = models.TextField(blank=True, null=True)
+    total_cost = models.DecimalField(max_digits=10, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.treatment_type} - {self.total_cost}"
+
+class FAQ(models.Model):
+    question = models.CharField(max_length=200)
+    answer = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.question
+
+class Testimonial(models.Model):
+    tag = models.CharField(max_length=50, blank=True, null=True)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        # コンテンツの最初の50文字を表示する
+        return self.content[:50]
