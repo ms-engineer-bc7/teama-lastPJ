@@ -7,7 +7,10 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # 依存関係をインストール
-RUN npm install
+RUN npm install --save-dev @firebase/app @firebase/auth @types/firebase
+RUN npm install firebase --save
+RUN npm install -g eslint
+RUN npm install react-firebase-hooks
 
 # ソースコードをコピー
 COPY . .
