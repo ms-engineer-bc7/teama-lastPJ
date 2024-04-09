@@ -1,6 +1,6 @@
 ## データベース設計
 
-### ユーザー情報（Users）
+### ユーザー情報（User）
 
 - id (主キー)
 - name (ユーザー名)
@@ -8,7 +8,7 @@
 - password (パスワード)
 - role (役割、例：ユーザー、パートナー、人事)
 
-### 予定管理（Events）
+### 予定管理（Event）
 
 - id (主キー)
 - user_id (外部キー、Users にリンク)
@@ -22,7 +22,7 @@
 - alert_message_for_p (アラートメッセージ) パートナー用
 - alert_time (アラートの時間) - いつユーザーに通知を送るか
 
-### 金額の目安（Costs）
+### 金額の目安（Cost）
 
 - id (主キー)
 - treatment_type (治療の種類、例：検査、注射、採卵、培養、人工授精、体外受精)
@@ -30,14 +30,14 @@
 - cost_details (金額内訳)
 - total_cost (合計金額)
 
-### FAQ（FAQs）
+### FAQ（FAQ）
 
 - id (主キー)
 - question (質問)
 - answer (回答)
 - created_at (作成日時)
 
-### 経験談（Testimonials）
+### 経験談（Testimonial）
 
 - id (主キー)
 - tag (タグ)
