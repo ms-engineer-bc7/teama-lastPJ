@@ -11,9 +11,6 @@ WORKDIR /app
 COPY requirements.txt /app/
 RUN pip install -r requirements.txt
 
-# Django Rest Frameworkをインストール
-# RUN pip install djangorestframework
-
 # 必要なファイルをコピー
 COPY . /app/
 

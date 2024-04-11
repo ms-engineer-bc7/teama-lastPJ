@@ -1,18 +1,13 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 
-class User(AbstractUser):
-    # AbstractUserには既にusername, email, first_name, last_nameが含まれる
-    # それらのフィールドは再定義しないようにする。
-    ROLE_CHOICES = (
-        ('user', _('女性')),
-        ('partner', _('パートナー')),
-    )
-    role = models.CharField(max_length=7, choices=ROLE_CHOICES, blank=True)
+class User(models.Model):
+    name = models.CharField(max_length=255, default='')
+    email = models.EmailField(unique=True)
+    role = models.CharField(max_length=7, choices=[('user', '女性'), ('partner', 'パートナー')], blank=True)
 
     def __str__(self):
-        return self.username  # AbstractUserにはusernameフィールドが既にあるため
+        return self.name
 
 class Event(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
