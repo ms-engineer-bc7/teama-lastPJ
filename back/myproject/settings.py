@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app.apps.AppConfig', # フォルダ名.apps.apps.pyのclass名　追記
+    'app.apps.AppConfig', # フォルダ名.apps.apps.pyのclass名4/9追記
+    'rest_framework', #DRFインストール4/10追記
 ]
 
 MIDDLEWARE = [
@@ -122,5 +123,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-AUTH_USER_MODEL = 'app.User'
