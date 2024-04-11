@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'app.apps.AppConfig', # フォルダ名.apps.apps.pyのclass名　追記
+    'app.apps.AppConfig', # フォルダ名.apps.apps.pyのclass名4/9追記
+    'rest_framework', #DRFインストール4/10追記
 ]
 
 MIDDLEWARE = [
