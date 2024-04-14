@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .models import Event
-from .serializers import EventSerializer
+from .models import User, Event
+from .serializers import UserSerializer, EventSerializer
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -8,6 +8,10 @@ from django.http import JsonResponse
 from langchain_openai import OpenAI
 from langchain.prompts import PromptTemplate
 from django.conf import settings
+
+class UserViewSet(viewsets.ModelViewSet): #Userモデルに対するCRUD操作
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 class EventViewSet(viewsets.ModelViewSet): #ModelViewSetを継承。CRUD操作を行うための一連のビューが自動的に作成
     queryset = Event.objects.all() #Eventモデルの全オブジェクトを取得
