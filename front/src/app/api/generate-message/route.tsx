@@ -2,12 +2,13 @@ import { NextRequest, NextResponse } from "next/server";
 
 const DJANGO_API_URL = "http://backend:8000/api/events/";
 
+// 非同期関数GETをエクスポートし、NextRequestオブジェクトを引数に取る
 export async function GET(req: NextRequest) {
   //   try {
-  //     const { searchParams } = new URL(req.url);
-  //     const eventId = searchParams.get("eventId");
-  //     console.log(`Request URL: ${req.url}`);
-  //     console.log(`Search Params:`, searchParams.toString());
+  //     const { searchParams } = new URL(req.url);　// req.urlを使ってURLオブジェクトを生成
+  //     const eventId = searchParams.get("eventId");　// URLのクエリパラメータからeventIdを取得
+  //     console.log(`Request URL: ${req.url}`);　// リクエストのURLをログ出力
+  //     console.log(`Search Params:`, searchParams.toString());　// URLのクエリパラメータをしてログ出力
 
   //     if (!eventId) {
   //       console.error("Event ID is missing");
@@ -19,8 +20,9 @@ export async function GET(req: NextRequest) {
 
   //     console.log(`Fetching message for event ID: ${eventId}`);
   try {
-    const eventId = 2;
+    const eventId = 2; //IDがうまく取得できず固定
     console.log(`Fetching message for event ID: ${eventId}`);
+    // Django APIにGETリクエストを送信し、レスポンスを待つ
     const res = await fetch(`${DJANGO_API_URL}${eventId}/generate_message/`, {
       method: "GET",
       headers: {
@@ -39,10 +41,11 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    const data = await res.json();
+    const data = await res.json(); // レスポンスのJSONを解析してデータを取得
     console.log("Message generated successfully");
-    console.log(data);
+    console.log(data); // 取得したデータをログに出す
 
+    // 取得したメッセージデータをJSONレスポンスとしてクライアントに送信
     return NextResponse.json({ message: data.message });
   } catch (error) {
     console.error("Error generating message:", error);
