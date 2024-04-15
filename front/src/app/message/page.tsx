@@ -24,13 +24,13 @@ export default function messageBannar() {
   };
 
   // メッセージを非同期に取得する
-  const fetchMessage = async (eventId: number) => {
+  const fetchMessage = async (id: number) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      // const eventId = 2; // 適切なイベントIDに置き換える
-      const response = await fetch(`/api/generate-message?eventId=${eventId}`, {
+      // const eventId = 2; // 適切なイベントIDに置き換える /api/events/${id}/generate-message
+      const response = await fetch(`/api/generate-message?eventId=${id}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
