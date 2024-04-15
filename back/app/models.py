@@ -5,6 +5,8 @@ class User(models.Model):
     name = models.CharField(max_length=255, default='')
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=7, choices=[('user', '女性'), ('partner', 'パートナー')], blank=True)
+    partner = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='linked_partner')
+    #Userモデルを参照する自己参照の外部キー パートナーがリンクを通じて登録するとこのフィールドにリンク
 
     def __str__(self):
         return self.name
