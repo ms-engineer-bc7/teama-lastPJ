@@ -94,11 +94,11 @@ export default function Calendar() {
       if (!result.error) {
         // POST処理が成功したら、カレンダーにイベントを追加する
         // サーバーから返されたイベントIDを使用
-        const newEvents = [...events, { ...newEvent, id: result.id }];
+        const newEvents = [...events, { ...newEvent, id: (result as any).id }];
         console.log("POST一覧", newEvents);
         setEvents(newEvents);
         // バックエンドにイベントIDを送信してメッセージを生成する
-        setSelectedEventId(result.id); // MessageBannerに表示するIDをセット
+        setSelectedEventId((result as any).id); // MessageBannerに表示するIDをセット
 
         setEventTitle("");
         setSelectedDate("");

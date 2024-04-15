@@ -2,7 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import styles from "./banner.module.css";
 
-export default function MessageBannar({ id }) {
+export default function MessageBannar({ id }: { id: string }) {
   const [message, setMessage] = useState("");
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -43,7 +43,7 @@ export default function MessageBannar({ id }) {
         setTimeout(() => {
           hideBanner();
         }, 5000);
-      } catch (error) {
+      } catch (error: any) {
         console.error("Error:", error);
         setError(error.message);
       } finally {
