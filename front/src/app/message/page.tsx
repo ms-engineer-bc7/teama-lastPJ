@@ -6,7 +6,7 @@ import styles from "./banner.module.css";
 export default function messageBannar() {
   const [message, setMessage] = useState("");
   const [showBanner, setShowBanner] = useState(false); // バナー表示の状態を管理
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   // バナー　CSSフェードアウトと同時に上にスライドして消えるアニメーション追加
@@ -53,12 +53,22 @@ export default function messageBannar() {
       setTimeout(() => {
         hideBanner();
       }, 3000);
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Error:", error);
-      setError(error.message);
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     } finally {
       setIsLoading(false);
     }
+    // } catch (error) {
+    //   console.error("Error:", error);
+    //   setError(error.message);
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
 
   return (

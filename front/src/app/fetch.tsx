@@ -1,7 +1,5 @@
 import { EventInput } from "@fullcalendar/core";
 import Calendar from "./calendar/page";
-// import axios from "axios";
-// import { useRouter } from "next/navigation";
 
 // get fetch
 export async function getFetchData(): Promise<EventInput[]> {
@@ -87,8 +85,6 @@ export async function deleteFetchData(
       );
     }
 
-    // const data = await response.json();
-    // console.log("DELETEのdata:", data);
     return { success: true, data };
   } catch (error) {
     if (error instanceof Error) {
@@ -99,63 +95,36 @@ export async function deleteFetchData(
   }
 }
 
-// const deleteFetchData = async () => {
-//   const router = useRouter();
-//   try {
-//     const response: any = await axios.delete(`/api/events/${id}`);
-//     console.log("削除が成功しました:", response.data);
-//     router.push("/");
-//   } catch (error) {
-//     console.error("削除中にエラーが発生しました:", error);
-//   }
-// };
-// export default deleteFetchData;
+// put fetch
+export async function putFetchData(
+  id: number,
+  updatedData: any
+): Promise<{ success?: boolean; data?: any; error?: string }> {
+  try {
+    const response = await fetch(`/api/events/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedData),
+    });
+    console.log("PUTのresponse:", response);
+    const data = await response.json();
+    console.log("PUTのdata:", data);
 
-// export async function deleteFetchData(
-//   id: number
-// ): Promise<{ success?: boolean; error?: string }> {
-//   try {
-//     const response = await fetch(`/api/events/${id}`, {
-//       method: "DELETE",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//     });
+    if (!response.ok) {
+      throw new Error(
+        data.message ||
+          "イベントの更新に失敗しました。サーバーから不正なレスポンスが返されています。"
+      );
+    }
 
-//     if (!response.ok) {
-//       throw new Error("Failed to delete event data.");
-//     }
-
-//     return { success: true };
-//   } catch (error) {
-//     if (error instanceof Error) {
-//       console.error("DELETE request failed:", error);
-//       return { error: error.message };
-//     }
-//     return { error: "DELETEができませんでした" };
-//   }
-// }
-
-// async function deleteEvent(id: number) {
-//   try {
-//     const response = await fetch(`/api/events/${id}`, {
-//       method: "DELETE",
-//     });
-//     const result = await response.json();
-//     if (response.ok) {
-//       console.log("削除成功:", result);
-//       // ここでフロントエンドの状態を更新
-//       removeEventFromState(id);
-//     } else {
-//       throw new Error(result.message);
-//     }
-//   } catch (error) {
-//     console.error("削除エラー:", error);
-//   }
-// }
-
-// function removeEventFromState(id: number) {
-//   setEvents((currentEvents: any) =>
-//     currentEvents.filter((event: any) => event.id !== id)
-//   );
-// }
+    return { success: true, data };
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error("PUTリクエストに失敗しました:", error);
+      return { error: error.message };
+    }
+    return { error: "PUTに失敗しました" };
+  }
+}
