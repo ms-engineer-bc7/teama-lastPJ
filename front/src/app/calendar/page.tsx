@@ -16,6 +16,7 @@ import {
   putFetchData,
 } from "../fetch";
 import { EventInfo } from "../types";
+import MessageBanner from "../_components/MessageBannar"; // MessageBannerコンポーネントのパス
 
 let eventGuid = 0;
 
@@ -79,9 +80,7 @@ export default function Calendar() {
     startDate: string,
     endDate: string
   ) => {
-    const eventId = createEventId();
     const newEvent = {
-      id: eventId,
       title: eventTitle,
       start: startDate,
       end: endDate,
@@ -94,9 +93,13 @@ export default function Calendar() {
       const result = await postFetchData(eventTitle, startDate, endDate, 1);
       if (!result.error) {
         // POST処理が成功したら、カレンダーにイベントを追加する
-        const newEvents = [...events, newEvent];
+        // サーバーから返されたイベントIDを使用
+        const newEvents = [...events, { ...newEvent, id: result.id }];
         console.log("POST一覧", newEvents);
         setEvents(newEvents);
+        // バックエンドにイベントIDを送信してメッセージを生成する
+        setSelectedEventId(result.id); // MessageBannerに表示するIDをセット
+
         setEventTitle("");
         setSelectedDate("");
         setIsModalOpen(false);
@@ -163,9 +166,9 @@ export default function Calendar() {
   };
 
   // 予定のIDを生成
-  const createEventId = () => {
-    return `event-${eventGuid++}`;
-  };
+  //   const createEventId = () => {
+  //     return `event-${eventGuid++}`;
+  //   };
 
   // モーダル閉じたときの処理
   const closeModal = () => {
@@ -215,6 +218,7 @@ export default function Calendar() {
           end: endDateTime,
         }}
       />
+      {selectedEventId && <MessageBanner id={selectedEventId} />}
     </>
   );
 }
