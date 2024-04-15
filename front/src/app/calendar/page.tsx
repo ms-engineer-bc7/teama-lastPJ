@@ -9,7 +9,12 @@ import interactionPlugin, {
 import { EventInput } from "@fullcalendar/core";
 import { EventContentArg } from "@fullcalendar/common";
 import Modal from "../_components/Modal";
-import { getFetchData, postFetchData, deleteFetchData } from "../fetch";
+import {
+  getFetchData,
+  postFetchData,
+  deleteFetchData,
+  putFetchData,
+} from "../fetch";
 import { EventInfo } from "../types";
 import MessageBanner from "../_components/MessageBannar"; // MessageBannerコンポーネントのパス
 
@@ -129,53 +134,41 @@ export default function Calendar() {
     }
   };
 
-  // const deleteEvent = async (eventId: string) => {
-  //   try {
-  //     const numericId = parseInt(eventId);
-  //     const result = await deleteFetchData(numericId);
-  //     console.log("数値に変換されたID:", numericId);
-  //     console.log("削除処理の結果:", result);
-  //     if (result.success) {
-  //       // DELETE処理が成功したら、カレンダーからイベントを削除する
-  //       const updatedEvents = events.filter(
-  //         (event: any) => event.id !== numericId
-  //       );
-  //       console.log("更新後のイベントリスト:", updatedEvents);
-  //       setEvents(updatedEvents);
-  //       setIsModalOpen(false);
-  //     } else {
-  //       console.error("イベント削除に失敗しました:", result.error);
-  //     }
-  //   } catch (error) {
-  //     console.error("イベント削除中にエラーが発生しました:", error);
-  //   }
-  // };
+  // PUT fetch
+  const updateEvent = async (
+    eventId: string,
+    title: string,
+    startDate: string,
+    endDate: string
+  ) => {
+    const updatedData = {
+      title: title,
+      start_date: startDate,
+      end_date: endDate,
+      user: 1,
+    };
 
-  // const deleteEvent = async (eventId: string) => {
-  //   try {
-  //     const result = await deleteFetchData(parseInt(eventId));
-  //     console.log("数値に変換されたID:", eventId);
-  //     console.log("削除処理の結果:", result);
-  //     if (result.success) {
-  //       // DELETE処理が成功したら、カレンダーからイベントを削除する
-  //       const updatedEvents = events.filter(
-  //         (event: any) => event.id.toString() !== eventId
-  //       );
-  //       console.log("更新後のイベントリスト:", updatedEvents);
-  //       setEvents(updatedEvents);
-  //       setIsModalOpen(false);
-  //     } else {
-  //       console.error("イベント削除に失敗しました:", result.error);
-  //     }
-  //   } catch (error) {
-  //     console.error("イベント削除中にエラーが発生しました:", error);
-  //   }
-  // };
+    const result = await putFetchData(parseInt(eventId), updatedData);
+
+    if (result.success) {
+      console.log("イベントの更新成功:", result.data);
+      // イベントの配列を更新する際、IDの比較を適切に行う
+      const updatedEvents = events.map((event) =>
+        parseInt(event.id || "0") === parseInt(eventId || "0")
+          ? { ...event, title, start: startDate, end: endDate }
+          : event
+      );
+      setEvents(updatedEvents);
+      setIsModalOpen(false);
+    } else {
+      console.error("イベントの更新エラー:", result.error);
+    }
+  };
 
   // 予定のIDを生成
-  // const createEventId = () => {
-  //   return `event-${eventGuid++}`; // 予定のIDを生成
-  // };
+  //   const createEventId = () => {
+  //     return `event-${eventGuid++}`;
+  //   };
 
   // モーダル閉じたときの処理
   const closeModal = () => {
@@ -214,9 +207,10 @@ export default function Calendar() {
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        onConfirm={submitEvent}
+        onConfirm={selectedEventId ? updateEvent : submitEvent}
         submitEvent={submitEvent}
         deleteEvent={deleteEvent}
+        updateEvent={updateEvent}
         event={{
           id: selectedEventId,
           title: modalEventTitle,

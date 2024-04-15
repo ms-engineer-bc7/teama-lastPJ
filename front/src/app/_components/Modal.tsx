@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { FormEvent } from "react";
 import ReactDOM from "react-dom";
-import { postFetchData } from "../fetch";
+import { postFetchData, putFetchData } from "../fetch";
+import styles from "./modal.module.css";
+// import "../styles/global.css";
 
 export default function Modal({
   isOpen,
@@ -9,6 +11,7 @@ export default function Modal({
   onConfirm,
   submitEvent,
   deleteEvent,
+  updateEvent,
   event,
 }: any) {
   const [modalEventTitle, setModalEventTitle] = useState("");
@@ -62,6 +65,7 @@ export default function Modal({
     onClose();
   };
 
+  // post の処理
   const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const handleData = await postFetchData(
@@ -114,6 +118,7 @@ export default function Modal({
           onChange={(e) => setEndDateTime(e.target.value)}
           className="border rounded px-3 py-2 mb-4 w-full"
         />
+
         <div className="flex justify-end">
           <button
             onClick={async () => {
@@ -123,6 +128,24 @@ export default function Modal({
           >
             保存
           </button>
+
+          <button
+            onClick={async () => {
+              if (event.id) {
+                await updateEvent(
+                  event.id,
+                  modalEventTitle,
+                  startDateTime,
+                  endDateTime
+                );
+                onClose();
+              }
+            }}
+            className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded mr-2"
+          >
+            変更
+          </button>
+
           <button
             onClick={() => {
               console.log("モーダルから渡されるイベントID:", event.id);
@@ -135,6 +158,7 @@ export default function Modal({
           >
             削除
           </button>
+
           <button
             onClick={handleClose}
             className="bg-gray-300 hover:bg-gray-400 text-gray-700 font-bold py-2 px-4 rounded"
