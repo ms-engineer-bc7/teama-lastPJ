@@ -7,8 +7,9 @@ export default function Modal({
   isOpen,
   onClose,
   onConfirm,
-  event,
   submitEvent,
+  deleteEvent,
+  event,
 }: any) {
   const [modalEventTitle, setModalEventTitle] = useState("");
   const [startDateTime, setStartDateTime] = useState("");
@@ -25,8 +26,9 @@ export default function Modal({
       setStartDateTime(formatDate(event.start));
       setEndDateTime(formatDate(event.end));
 
-      console.log("event.startの値", event.start);
-      console.log("event.endの値", event.end);
+      console.log("モーダルオープン時:開始日", event.start);
+      console.log("モーダルオープン時:終了日", event.end);
+      console.log("モーダルオープン時:ID", event.id);
       // 背景をスクロールできないようにする
       document.body.style.overflow = "hidden";
     } else {
@@ -73,7 +75,7 @@ export default function Modal({
 
   function formatDate(originalDateTime: string) {
     const convertedDateTime = originalDateTime.substring(0, 16); // "YYYY-MM-DDTHH:mm" の形式に切り取る
-    console.log(convertedDateTime);
+    console.log("日付修正関数のログ", convertedDateTime);
     return convertedDateTime;
   }
 
@@ -120,6 +122,18 @@ export default function Modal({
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mr-2"
           >
             保存
+          </button>
+          <button
+            onClick={() => {
+              console.log("モーダルから渡されるイベントID:", event.id);
+              deleteEvent(event.id.toString());
+            }}
+            // onClick={async () => {
+            //   await deleteEvent(event.id); // 削除処理関数を実行
+            // }}
+            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2"
+          >
+            削除
           </button>
           <button
             onClick={handleClose}
