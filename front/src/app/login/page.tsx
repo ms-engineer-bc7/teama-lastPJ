@@ -12,15 +12,34 @@ export default function Login() {
 
   const signInWithGoogle = async () => {
     try {
-      // サインイン成功時の処理
-      await signInWithPopup(auth, provider);
-      // 成功後、カレンダーページへリダイレクト
-      router.push("/calendar");
+      const result = await signInWithPopup(auth, provider);
+
+      const userData = {
+        name: result.user.displayName,
+        uid: result.user.uid,
+        email: result.user.email,
+      };
+
+      // APIを呼び出してユーザーデータをサーバーに送信
+      const response = await fetch("/api/users/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+      console.log("Google認証時レスポンス", response);
+
+      if (response.ok) {
+        console.log("response.ok:", response.ok);
+        console.log("Google認証時POSTされたデータ:", userData);
+        router.push("/calendar");
+      } else {
+        throw new Error("Failed to save user data");
+      }
     } catch (error) {
-      // サインイン失敗時の処理
       console.error("サインインに失敗しました:", error);
-      // エラーページへリダイレクト
-      redirect("/error");
+      router.push("/error");
     }
   };
 
