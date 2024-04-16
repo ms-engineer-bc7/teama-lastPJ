@@ -1,15 +1,13 @@
 import { EventInput } from "@fullcalendar/core";
 import Calendar from "./calendar/page";
 
-// get fetch
+// get
 export async function getFetchData(): Promise<EventInput[]> {
   try {
     const response = await fetch("/api/events", {
       method: "GET",
     });
-    // console.log("GETレスポンス:", response);
     const data = await response.json();
-    // console.log("dataの値:", data);
 
     const events: EventInput[] = data.map((e: any) => ({
       id: e.id,
@@ -25,7 +23,7 @@ export async function getFetchData(): Promise<EventInput[]> {
   }
 }
 
-// post fetch
+// post
 export async function postFetchData(
   title: string,
   start_date: string,
@@ -60,7 +58,7 @@ export async function postFetchData(
   }
 }
 
-// delete fetch
+// delete
 export async function deleteFetchData(
   id: number
 ): Promise<{ success?: boolean; data?: any; error?: string }> {
@@ -71,14 +69,13 @@ export async function deleteFetchData(
         "Content-Type": "application/json",
       },
     });
-    console.log("DELETEのresponse:", response);
 
     const data = await response.json();
-    console.log("DELETEのdata:", data);
+    console.log("DELETEされたデータ(fetch関数内):", data);
 
     if (!response.ok) {
-      const data = await response.json();
-      console.log("DELETEのdata:", data);
+      // サーバーからのレスポンスがエラーの場合、例外をスローします
+      console.error("DELETE操作のエラーレスポンス:", data);
       throw new Error(
         data.message ||
           "イベントの削除に失敗しました。サーバーから不正なレスポンスが返されています。"
@@ -88,14 +85,16 @@ export async function deleteFetchData(
     return { success: true, data };
   } catch (error) {
     if (error instanceof Error) {
-      console.error("DELETEリクエストに失敗しました:", error);
+      console.error("DELETEリクエストに失敗しました:", error.message);
       return { error: error.message };
+    } else {
+      console.error("予期せぬエラータイプ:", error);
+      return { error: "DELETEに失敗しました" };
     }
-    return { error: "DELETEに失敗しました" };
   }
 }
 
-// put fetch
+// put
 export async function putFetchData(
   id: number,
   updatedData: any
@@ -108,9 +107,7 @@ export async function putFetchData(
       },
       body: JSON.stringify(updatedData),
     });
-    console.log("PUTのresponse:", response);
     const data = await response.json();
-    console.log("PUTのdata:", data);
 
     if (!response.ok) {
       throw new Error(

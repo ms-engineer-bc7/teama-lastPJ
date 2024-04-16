@@ -2,10 +2,7 @@
 import React, { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid"; // 月表示
-import interactionPlugin, {
-  DateClickArg,
-  // EventClickArg, clickInfoでエラー
-} from "@fullcalendar/interaction";
+import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 import { EventInput } from "@fullcalendar/core";
 import { EventContentArg } from "@fullcalendar/common";
 import Modal from "../_components/Modal";
@@ -31,7 +28,7 @@ export default function Calendar() {
   const [selectedTime, setSelectedTime] = useState("00:00");
   const [selectedEventId, setSelectedEventId] = useState("");
 
-  // get fetch
+  // GET の処理
   useEffect(() => {
     async function fetchData() {
       const events = await getFetchData();
@@ -49,7 +46,7 @@ export default function Calendar() {
     console.log("予定クリック時:イベントタイトル", event.title);
     console.log("予定クリック時:開始日", event.startStr);
     console.log("予定クリック時:終了日", event.endStr);
-    console.log("取得したID:", event.id);
+    console.log("予定クリック時:取得したID", event.id);
 
     setSelectedEventId(event.id);
     setModalEventTitle(event.title);
@@ -60,16 +57,16 @@ export default function Calendar() {
 
   // カレンダーの日付(マス)をクリックしたときの処理
   const handleDateClick = (clickInfo: DateClickArg) => {
-    console.log("handleDateClick 実行確認");
+    console.log("日付空欄クリック時:handleDateClick動作確認");
 
     // モーダルの情報を次回の入力で保持しないために、タイトル、開始日、終了日を初期化
     setModalEventTitle("");
     setStartDateTime("");
     setEndDateTime("");
 
-    // 日付フォーマット修正
+    // 日付フォーマット修正 カズさんとハンズオン
     const formattedDate = `${clickInfo.dateStr}T${selectedTime}`;
-    console.log("日付の取得確認", formattedDate);
+    console.log("日付形式の取得確認", formattedDate);
     setSelectedDate(formattedDate);
     setIsModalOpen(true);
   };
@@ -87,7 +84,9 @@ export default function Calendar() {
       color: "blue",
     };
 
-    // POST fetch
+    console.log("POSTされたデータ:", newEvent);
+
+    // POST の処理
     try {
       // POST処理を実行し結果を取得
       const result = await postFetchData(eventTitle, startDate, endDate, 1);
@@ -95,7 +94,6 @@ export default function Calendar() {
         // POST処理が成功したら、カレンダーにイベントを追加する
         // サーバーから返されたイベントIDを使用
         const newEvents = [...events, { ...newEvent, id: (result as any).id }];
-        console.log("POST一覧", newEvents);
         setEvents(newEvents);
         // バックエンドにイベントIDを送信してメッセージを生成する
         setSelectedEventId((result as any).id); // MessageBannerに表示するIDをセット
@@ -111,19 +109,17 @@ export default function Calendar() {
     }
   };
 
-  // DELETE fetch
+  // DELETE 処理
   const deleteEvent = async (eventId: string) => {
     try {
       const numericId = parseInt(eventId);
       const result = await deleteFetchData(numericId);
-      console.log("数値に変換されたID:", numericId);
-      console.log("削除処理の結果:", result);
+      console.log("DELETEされたデータ:", result);
       if (result.success) {
         // DELETE処理が成功したら、カレンダーからイベントを削除する
         const updatedEvents = events.filter(
           (event: any) => event.id !== numericId
         );
-        console.log("更新後のイベントリスト:", updatedEvents);
         setEvents(updatedEvents);
         setIsModalOpen(false);
       } else if (result.error) {
@@ -134,7 +130,7 @@ export default function Calendar() {
     }
   };
 
-  // PUT fetch
+  // PUT 処理
   const updateEvent = async (
     eventId: string,
     title: string,
@@ -148,12 +144,13 @@ export default function Calendar() {
       user: 1,
     };
 
+    console.log("PUTされたデータ:", updatedData);
+
     const result = await putFetchData(parseInt(eventId), updatedData);
 
     if (result.success) {
-      console.log("イベントの更新成功:", result.data);
       // イベントの配列を更新する際、IDの比較を適切に行う
-      const updatedEvents = events.map((event) =>
+      const updatedEvents = events.map((event: any) =>
         parseInt(event.id || "0") === parseInt(eventId || "0")
           ? { ...event, title, start: startDate, end: endDate }
           : event
@@ -165,12 +162,7 @@ export default function Calendar() {
     }
   };
 
-  // 予定のIDを生成
-  //   const createEventId = () => {
-  //     return `event-${eventGuid++}`;
-  //   };
-
-  // モーダル閉じたときの処理
+  // モーダルを非表示にする
   const closeModal = () => {
     setIsModalOpen(false);
   };
