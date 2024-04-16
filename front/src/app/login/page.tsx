@@ -33,7 +33,7 @@ export default function Login() {
       if (response.ok) {
         console.log("response.ok:", response.ok);
         console.log("Google認証時POSTされたデータ:", userData);
-        router.push("/calendar");
+        router.push("/role");
       } else {
         throw new Error("Failed to save user data");
       }
