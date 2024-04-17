@@ -9,7 +9,10 @@ interface Params {
 // 特定のIDのユーザーを取得
 export async function GET(req: Request, { params }: { params: Params }) {
   const { id } = params;
-  const res = await fetch(`${DJANGO_USER_API_URL}${id}/`);
+  console.log(req.headers)
+  const res = await fetch(`${DJANGO_USER_API_URL}${id}/`, {
+    headers: req.headers
+  });
 
   if (!res.ok) {
     console.error(`Django API Error: ${res.status} ${res.statusText}`);
@@ -28,25 +31,11 @@ export async function GET(req: Request, { params }: { params: Params }) {
 export async function PUT(req: Request, { params }: { params: Params }) {
   const { id } = params;
   const body = await req.json();
-  const res = await fetch(`${DJANGO_USER_API_URL}${id}/`, {
+  return await fetch(`${DJANGO_USER_API_URL}${id}/`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: req.headers,
     body: JSON.stringify(body),
   });
-
-  if (!res.ok) {
-    console.error(`Django API Error: ${res.status} ${res.statusText}`);
-    console.error(`Response body: ${await res.text()}`);
-    return NextResponse.json(
-      { error: "Failed to update user" },
-      { status: 500 }
-    );
-  }
-
-  const updatedUser = await res.json();
-  return NextResponse.json(updatedUser);
 }
 
 // 特定のIDのユーザーを削除
@@ -54,6 +43,7 @@ export async function DELETE(req: Request, { params }: { params: Params }) {
   const { id } = params;
   const res = await fetch(`${DJANGO_USER_API_URL}${id}/`, {
     method: "DELETE",
+    headers: req.headers,
   });
 
   if (!res.ok) {

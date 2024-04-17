@@ -1,11 +1,26 @@
 import { EventInput } from "@fullcalendar/core";
 import Calendar from "./calendar/page";
+import { User } from "../../@type";
+
+export const getUserInfo = async (authUser: any) => {
+  return fetch(`/api/users/${authUser.uid}`, {
+    headers: {
+      'Authorization': `Bearer ${authUser.accessToken}`
+    }
+  })
+
+}
+
 
 // get
-export async function getFetchData(): Promise<EventInput[]> {
+export async function getFetchData(token: string): Promise<EventInput[]> {
   try {
     const response = await fetch("/api/events", {
       method: "GET",
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+
     });
     const data = await response.json();
 
@@ -28,8 +43,14 @@ export async function postFetchData(
   title: string,
   start_date: string,
   end_date: string,
-  user: number
+  user: number,
 ): Promise<{ data?: typeof Calendar; error?: string }> {
+  console.log({
+    title,
+    start_date,
+    end_date,
+    user,
+  })
   try {
     const response = await fetch("/api/events", {
       method: "POST",
@@ -43,6 +64,7 @@ export async function postFetchData(
         user,
       }),
     });
+
 
     const data = await response.json();
     if (!response.ok) {
@@ -78,7 +100,7 @@ export async function deleteFetchData(
       console.error("DELETE操作のエラーレスポンス:", data);
       throw new Error(
         data.message ||
-          "イベントの削除に失敗しました。サーバーから不正なレスポンスが返されています。"
+        "イベントの削除に失敗しました。サーバーから不正なレスポンスが返されています。"
       );
     }
 
@@ -112,7 +134,7 @@ export async function putFetchData(
     if (!response.ok) {
       throw new Error(
         data.message ||
-          "イベントの更新に失敗しました。サーバーから不正なレスポンスが返されています。"
+        "イベントの更新に失敗しました。サーバーから不正なレスポンスが返されています。"
       );
     }
 

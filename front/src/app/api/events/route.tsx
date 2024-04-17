@@ -7,9 +7,7 @@ export async function GET(req: NextRequest) {
     console.log("Fetching events from Django API...");
     const res = await fetch(DJANGO_API_URL, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: req.headers,
     });
 
     console.log(`Django API response status: ${res.status}`);

@@ -68,12 +68,13 @@ class SpreadSheetClient():
             'Saturday': '土',
             'Sunday': '日',
         }
-        header = ['日付', '曜日', 'タイトル']
+        header = ['日付', '曜日', 'イベント']
         result.append(header)
         for date in dates:
             weekday = weekdayJp[date.strftime('%A')]
             result.append([date.strftime("%Y/%m/%d"), weekday, "\n".join(eventDict[date.strftime("%Y/%m/%d")])])
         sheet.update('A1', result)
+
         fmt = cellFormat(
             backgroundColor=color(1, 0.9, 0.9),
             horizontalAlignment='CENTER'

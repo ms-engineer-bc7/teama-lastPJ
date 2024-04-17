@@ -8,7 +8,11 @@ interface Params {
 
 export async function GET(req: Request, { params }: { params: Params }) {
   const { id } = params;
-  const res = await fetch(`${DJANGO_API_URL}${id}/`);
+  const res = await fetch(`${DJANGO_API_URL}${id}/`,
+    {
+      headers: req.headers
+    }
+  );
   const event = await res.json();
   return NextResponse.json(event);
 }
