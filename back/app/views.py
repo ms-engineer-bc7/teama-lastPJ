@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from .models import User, Event
-from .serializers import UserSerializer, EventSerializer
+from .models import User, Event, Viewer
+from .serializers import UserSerializer, EventSerializer, ViewerSerializer
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -8,6 +8,10 @@ from django.http import JsonResponse
 from langchain_openai import OpenAI
 from langchain.prompts import PromptTemplate
 from django.conf import settings
+
+class ViewerViewSet(viewsets.ModelViewSet): #Viewerモデルに対するCRUD操作
+    queryset = Viewer.objects.all()
+    serializer_class = ViewerSerializer
 
 class UserViewSet(viewsets.ModelViewSet): #Userモデルに対するCRUD操作
     queryset = User.objects.all()
