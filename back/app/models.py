@@ -3,10 +3,11 @@ from django.utils.translation import gettext_lazy as _
 
 class User(models.Model):
     name = models.CharField(max_length=255, default='')
+    uid = models.CharField(max_length=255, unique=True, null=True, blank=True)  # Firebase UID
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=7, choices=[('user', '女性'), ('partner', 'パートナー')], blank=True)
-    partner = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='linked_partner')
-    #Userモデルを参照する自己参照の外部キー パートナーがリンクを通じて登録するとこのフィールドにリンク
+    # partner = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='linked_partner')
+    # #Userモデルを参照する自己参照の外部キー パートナーがリンクを通じて登録するとこのフィールドにリンク
 
     def __str__(self):
         return self.name
@@ -25,6 +26,7 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.start_date.strftime('%Y-%m-%d')}"
+    
 
 class Cost(models.Model):
     treatment_type = models.CharField(max_length=100)

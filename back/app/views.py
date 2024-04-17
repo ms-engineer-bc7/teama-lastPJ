@@ -9,9 +9,13 @@ from langchain_openai import OpenAI
 from langchain.prompts import PromptTemplate
 from django.conf import settings
 
+
+
+
+
 class UserViewSet(viewsets.ModelViewSet): #Userモデルに対するCRUD操作
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserSerializer  
 
 class EventViewSet(viewsets.ModelViewSet): #ModelViewSetを継承。CRUD操作を行うための一連のビューが自動的に作成
     queryset = Event.objects.all() #Eventモデルの全オブジェクトを取得
