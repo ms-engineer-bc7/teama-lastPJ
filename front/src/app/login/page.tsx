@@ -39,15 +39,13 @@ export default function Login() {
       }
     } catch (error) {
       console.error("サインインに失敗しました:", error);
-      router.push("/error");
+      redirect("/error");
     }
   };
   return (
-    // 親のdivをflexコンテナとして定義
-    <div className="flex min-h-screen bg-white">
-      {/* 画像のdiv */}
-      <div className="w-1/2 flex justify-center items-center">
-        <img src="/toppage.png" alt="toppage-image" />
+    <div className="flex min-h-screen">
+      <div className="w-1/2 flex justify-center items-center min-h-screen">
+        <img src="/img/login.svg" alt="toppage-image" />
       </div>
 
       {/* ボタンのdiv */}
@@ -76,4 +74,3 @@ export default function Login() {
     </div>
   );
 }
-
