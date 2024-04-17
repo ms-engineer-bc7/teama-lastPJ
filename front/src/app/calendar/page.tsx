@@ -81,14 +81,15 @@ export default function Calendar() {
   const handleDateClick = (clickInfo: DateClickArg) => {
     console.log("日付空欄クリック時:handleDateClick動作確認");
 
-    // モーダルの情報を次回の入力で保持しないために、タイトル、開始日、終了日を初期化
-    setModalEventTitle("");
-    setStartDateTime("");
-    setEndDateTime("");
-
     // 日付フォーマット修正 カズさんとハンズオン
     const formattedDate = `${clickInfo.dateStr}T${selectedTime}`;
     console.log("日付形式の取得確認", formattedDate);
+
+    // モーダルの情報を次回の入力で保持しないために、タイトル、開始日、終了日を初期化
+    setModalEventTitle("");
+    setStartDateTime(formattedDate);
+    setEndDateTime("");
+
     setSelectedDate(formattedDate);
     setIsModalOpen(true);
   };
