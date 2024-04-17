@@ -25,6 +25,13 @@ class Event(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.start_date.strftime('%Y-%m-%d')}"
+    
+class Viewer(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    allowed_email = models.EmailField(blank=True, null=True)  # 最初は空でもOK
+    
+    def __str__(self):
+        return self.allowed_email or "No email set"   
 
 class Cost(models.Model):
     treatment_type = models.CharField(max_length=100)
