@@ -45,16 +45,31 @@ export default function Login() {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center min-h-screen py-2">
-        <button
-          className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white"
-          onClick={signInWithGoogle}
+      <div>
+        <div className="login-img">
+          {/* ここに画像を挿入してください */}
+          <img src="" alt="" />
+        </div>
+
+        <div
+          className="login-buttons"
+          className="flex flex-col items-center justify-center min-h-screen py-2"
         >
-          ログイン
-        </button>
-        <p className="mt-5">
-          <Link href="/">トップページに戻る</Link>
-        </p>
+          {/* ログインボタン */}
+          <button
+            className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white"
+            onClick={signInWithGoogle}
+          >
+            新規登録
+          </button>
+
+          {/* 新規登録ボタン */}
+          <button>グーグルでログイン</button>
+
+          <p className="mt-5">
+            <Link href="/">トップページに戻る</Link>
+          </p>
+        </div>
       </div>
     </>
   );
