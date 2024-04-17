@@ -1,23 +1,31 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid"; // 月表示
 import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 import { EventInput } from "@fullcalendar/core";
 import { EventContentArg } from "@fullcalendar/common";
+import { auth } from "../firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
 import Modal from "../_components/Modal";
 import {
   getFetchData,
   postFetchData,
   deleteFetchData,
   putFetchData,
+  getUserInfo,
 } from "../fetch";
 import { EventInfo } from "../types";
 import MessageBanner from "../_components/MessageBannar"; // MessageBannerコンポーネントのパス
+import { User } from "../../../@type";
 
 let eventGuid = 0;
 
 export default function Calendar() {
+  const router = useRouter();
+  const [authUser] = useAuthState(auth);
+  const [user, setUser] = useState<User>()
   const [events, setEvents] = useState<EventInput[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
@@ -30,13 +38,27 @@ export default function Calendar() {
 
   // GET の処理
   useEffect(() => {
+    if (!authUser) return
+    getUserInfo(authUser)
+      .then(async res => {
+        const data = await res.json();
+        setUser(data)
+        if (data.role == "")
+          router.push('/role')
+        if (data.role == "partner")
+          router.push('/partner')
+      })
+      .catch(err => {
+        router.push('/login')
+      })
+
     async function fetchData() {
-      const events = await getFetchData();
+      const events = await getFetchData(authUser.accessToken);
       console.log("getした値(event)", events);
       setEvents(events);
     }
     fetchData();
-  }, []);
+  }, [authUser]);
 
   // ユーザーが予定をクリックしたらモーダルが開き、詳細が見れる
   const handleEventClick = (clickInfo: any) => {
@@ -59,14 +81,15 @@ export default function Calendar() {
   const handleDateClick = (clickInfo: DateClickArg) => {
     console.log("日付空欄クリック時:handleDateClick動作確認");
 
-    // モーダルの情報を次回の入力で保持しないために、タイトル、開始日、終了日を初期化
-    setModalEventTitle("");
-    setStartDateTime("");
-    setEndDateTime("");
-
     // 日付フォーマット修正 カズさんとハンズオン
     const formattedDate = `${clickInfo.dateStr}T${selectedTime}`;
     console.log("日付形式の取得確認", formattedDate);
+
+    // モーダルの情報を次回の入力で保持しないために、タイトル、開始日、終了日を初期化
+    setModalEventTitle("");
+    setStartDateTime(formattedDate);
+    setEndDateTime("");
+
     setSelectedDate(formattedDate);
     setIsModalOpen(true);
   };
@@ -89,7 +112,7 @@ export default function Calendar() {
     // POST の処理
     try {
       // POST処理を実行し結果を取得
-      const result = await postFetchData(eventTitle, startDate, endDate, 1);
+      const result = await postFetchData(eventTitle, startDate, endDate, user!.id);
       if (!result.error) {
         // POST処理が成功したら、カレンダーにイベントを追加する
         // サーバーから返されたイベントIDを使用
@@ -141,7 +164,7 @@ export default function Calendar() {
       title: title,
       start_date: startDate,
       end_date: endDate,
-      user: 1,
+      user: user!.uid,
     };
 
     console.log("PUTされたデータ:", updatedData);

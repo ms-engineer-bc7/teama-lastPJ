@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 class User(models.Model):
+    uid = models.CharField(max_length=255, null=True, blank=True) #firebaseのUid
     name = models.CharField(max_length=255, default='')
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=7, choices=[('user', '女性'), ('partner', 'パートナー')], blank=True)

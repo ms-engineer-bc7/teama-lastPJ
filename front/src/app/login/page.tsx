@@ -5,6 +5,7 @@ import { signInWithPopup } from "firebase/auth";
 import { auth, provider } from "../firebase";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { getUserInfo } from "../fetch";
 
 export default function Login() {
   const [user] = useAuthState(auth);
@@ -19,23 +20,30 @@ export default function Login() {
         uid: result.user.uid,
         email: result.user.email,
       };
+      // databaseにデータが存在しているか確認
+      const res = await getUserInfo(result.user)
 
-      // APIを呼び出してユーザーデータをサーバーに送信
-      const response = await fetch("/api/users/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-      console.log("Google認証時レスポンス", response);
-
-      if (response.ok) {
-        console.log("response.ok:", response.ok);
-        console.log("Google認証時POSTされたデータ:", userData);
-        router.push("/role");
+      // 404の場合、ユーザーを作成
+      if (res.status == 404) {
+        // APIを呼び出してユーザーデータをサーバーに送信
+        const response = await fetch("/api/users/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        }).then(res => {
+          router.push("/role")
+        }).catch(err => alert('ユーザーの作成に失敗しました。'));
       } else {
-        throw new Error("Failed to save user data");
+        // 画面遷移
+        const data = await res.json()
+        if (data.role === "")
+          router.push("/role")
+        if (data.role === "user")
+          router.push("/calendar")
+        if (data.role === "partner")
+          router.push("/partner")
       }
     } catch (error) {
       console.error("サインインに失敗しました:", error);
