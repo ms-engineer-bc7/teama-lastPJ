@@ -37,3 +37,7 @@ html {
 .fc-h-event {
   border: none;
 }
+
+.fc-media-screen {
+  margin: 30px;
+}
