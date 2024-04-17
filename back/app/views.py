@@ -3,17 +3,17 @@ from .models import User, Event, SpreadSheet
 from .serializers import UserSerializer, EventSerializer, SpreadSheetSerializer
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
-from rest_framework.response import Response
 from django.http import JsonResponse
 from langchain_openai import OpenAI
 from langchain.prompts import PromptTemplate
 from django.conf import settings
-from google.oauth2.service_account import Credentials
-import gspread
+from .libs.spreadsheet import SpreadSheetClient
+
+
 
 class UserViewSet(viewsets.ModelViewSet): #Userモデルに対するCRUD操作
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserSerializer    
 
 class EventViewSet(viewsets.ModelViewSet): #ModelViewSetを継承。CRUD操作を行うための一連のビューが自動的に作成
     queryset = Event.objects.all() #Eventモデルの全オブジェクトを取得
@@ -54,14 +54,24 @@ class EventViewSet(viewsets.ModelViewSet): #ModelViewSetを継承。CRUD操作�
         return JsonResponse({'message': response})
     
     def perform_create(self, serializer):
-        serializer.save(event=self.request.event)
+        serializer.save()
         # sperad sheetの更新も行う
+        self.update_spreadsheet(serializer.validated_data["user"])
         
-
     
     def perform_update(self, serializer):
         instance = serializer.save()
         # sperad sheetの更新も行う
+        self.update_spreadsheet(serializer.validated_data["user"])
+
+    
+    def update_spreadsheet(self, user=None):
+        ss = SpreadSheet.objects.filter(user=user)
+        if not ss:
+            return
+        events = Event.objects.filter(user=user)
+        ssClient = SpreadSheetClient()
+        ssClient.update_calendar(ss.first().sheet_id, events)
 
 
 
@@ -86,53 +96,16 @@ class SpreadSheetViewSet(viewsets.ModelViewSet):
         self.get_queryset()
 
         # spreadsheetの設定
-        gclient = self.get_spreadsheet_client()
-        spreadsheet = gclient.create('Sharecleカレンダー共有')
+        ssClient = SpreadSheetClient()
         shared_email = serializer.validated_data['shared_email']
+        sheet = ssClient.create_spreadsheet(self.user.email, shared_email, 'Sharecleカレンダー共有')
         
-        #　権限の付与
-        spreadsheet.share(self.user.email, perm_type='user', role='writer')
-        spreadsheet.share(shared_email, perm_type='user', role='reader')
-
         # updateカレンダー
-        self.update_calendar(spreadsheet.id)
+        ssClient.update_calendar(sheet.id)
         
         #DBに保存
         serializer.save(
-            sheet_id=spreadsheet.id,
+            sheet_id=sheet.id,
             user=self.user,
             shared_email=shared_email,
         )
-        
-    def get_spreadsheet_client(self):
-        scopes = [
-            'https://www.googleapis.com/auth/spreadsheets',
-            'https://www.googleapis.com/auth/drive'
-        ]
-
-        credentials = Credentials.from_service_account_info(
-            {
-                "type": "service_account",
-                "project_id": settings.GCP_PROJECT_ID,
-                "private_key_id": settings.GCP_PRIVATE_KEY_ID,
-                "private_key": settings.GCP_PRIVATE_KEY,
-                "client_email": settings.GCP_CLIENT_MAIL,
-                "client_id": settings.GCP_CLIENT_ID,
-                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-                "token_uri": "https://oauth2.googleapis.com/token",
-                "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-                "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/mse-spreadsheet%40scpro-302715.iam.gserviceaccount.com",
-                "universe_domain": "googleapis.com"
-            },
-            scopes=scopes
-        )
-        client = gspread.authorize(credentials)
-        return client
-
-    def update_calendar(self, sheet_id):
-        gclient = self.get_spreadsheet_client()
-        spreadsheet = gclient.open_by_key(sheet_id)
-        sheet = spreadsheet.sheet1
-        # TODO スケジュールデータを取得し2重配列にする
-        sheet.update('A1', [["2024-04-01", "aaaa"], ["2024-04-02", "bbbbb"]])
-          

@@ -87,7 +87,8 @@ export default function Settings() {
                                     Spreadsheetを開く
                                 </button>
                             </Link>
-                        </div>}
+                        </div>
+                    }
                 </div>
             </Suspense>
         </>
