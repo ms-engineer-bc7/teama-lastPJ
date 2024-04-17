@@ -51,3 +51,9 @@ class Testimonial(models.Model):
     def __str__(self):
         # コンテンツの最初の50文字を表示する
         return self.content[:50]
+
+class SpreadSheet(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    sheet_id = models.CharField(max_length=255, blank=True, null=True)
+    shared_email = models.EmailField()
+

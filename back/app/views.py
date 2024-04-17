@@ -1,13 +1,15 @@
-from django.shortcuts import render
-from .models import User, Event
-from .serializers import UserSerializer, EventSerializer
-from rest_framework import viewsets
+from django.shortcuts import render, get_object_or_404
+from .models import User, Event, SpreadSheet
+from .serializers import UserSerializer, EventSerializer, SpreadSheetSerializer
+from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.http import JsonResponse
 from langchain_openai import OpenAI
 from langchain.prompts import PromptTemplate
 from django.conf import settings
+from google.oauth2.service_account import Credentials
+import gspread
 
 class UserViewSet(viewsets.ModelViewSet): #Userモデルに対するCRUD操作
     queryset = User.objects.all()
@@ -50,3 +52,87 @@ class EventViewSet(viewsets.ModelViewSet): #ModelViewSetを継承。CRUD操作�
 
         # 生成されたメッセージを JSON 形式で返す
         return JsonResponse({'message': response})
+    
+    def perform_create(self, serializer):
+        serializer.save(event=self.request.event)
+        # sperad sheetの更新も行う
+        
+
+    
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        # sperad sheetの更新も行う
+
+
+
+class SpreadSheetViewSet(viewsets.ModelViewSet):
+    queryset = SpreadSheet.objects.all()
+    serializer_class = SpreadSheetSerializer
+    user = None
+
+    # anyone has permit only get, create
+    def get_permissions(self):
+        if self.action in ['update', 'partial_update', 'destroy']:
+            return [permissions.IsAdminUser()]
+        return [permissions.AllowAny()]
+
+    def get_queryset(self):
+        user_id = int(self.request.GET.get('user', 0))
+        self.user = get_object_or_404(User, pk=user_id)
+        return SpreadSheet.objects.filter(user=self.user)
+    
+    def perform_create(self, serializer):
+        # POSTの際は、queryset呼ばれないので、強制的に呼び出し
+        self.get_queryset()
+
+        # spreadsheetの設定
+        gclient = self.get_spreadsheet_client()
+        spreadsheet = gclient.create('Sharecleカレンダー共有')
+        shared_email = serializer.validated_data['shared_email']
+        
+        #　権限の付与
+        spreadsheet.share(self.user.email, perm_type='user', role='writer')
+        spreadsheet.share(shared_email, perm_type='user', role='reader')
+
+        # updateカレンダー
+        self.update_calendar(spreadsheet.id)
+        
+        #DBに保存
+        serializer.save(
+            sheet_id=spreadsheet.id,
+            user=self.user,
+            shared_email=shared_email,
+        )
+        
+    def get_spreadsheet_client(self):
+        scopes = [
+            'https://www.googleapis.com/auth/spreadsheets',
+            'https://www.googleapis.com/auth/drive'
+        ]
+
+        credentials = Credentials.from_service_account_info(
+            {
+                "type": "service_account",
+                "project_id": settings.GCP_PROJECT_ID,
+                "private_key_id": settings.GCP_PRIVATE_KEY_ID,
+                "private_key": settings.GCP_PRIVATE_KEY,
+                "client_email": settings.GCP_CLIENT_MAIL,
+                "client_id": settings.GCP_CLIENT_ID,
+                "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                "token_uri": "https://oauth2.googleapis.com/token",
+                "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+                "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/mse-spreadsheet%40scpro-302715.iam.gserviceaccount.com",
+                "universe_domain": "googleapis.com"
+            },
+            scopes=scopes
+        )
+        client = gspread.authorize(credentials)
+        return client
+
+    def update_calendar(self, sheet_id):
+        gclient = self.get_spreadsheet_client()
+        spreadsheet = gclient.open_by_key(sheet_id)
+        sheet = spreadsheet.sheet1
+        # TODO スケジュールデータを取得し2重配列にする
+        sheet.update('A1', [["2024-04-01", "aaaa"], ["2024-04-02", "bbbbb"]])
+          
