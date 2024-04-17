@@ -1,8 +1,7 @@
 from google.oauth2.service_account import Credentials
 import gspread
 from gspread_formatting import *
-
-import datetime
+from datetime import datetime, timedelta, timezone
 from collections import defaultdict
 
 from django.conf import settings
@@ -46,7 +45,7 @@ class SpreadSheetClient():
         return spreadsheet
     
 
-    def update_calendar(self, sheet_id, events):
+    def update_calendar(self, sheet_id, events=[]):
         spreadsheet = self.client.open_by_key(sheet_id)
         sheet = spreadsheet.sheet1
 
@@ -55,9 +54,9 @@ class SpreadSheetClient():
 
         result = []
         # 現在の日付
-        today = datetime.datetime.now()
+        today = datetime.now(timezone(timedelta(hours=+9), 'JST'))
         # 直近の30日分の日時を生成
-        dates = [today + datetime.timedelta(days=x) for x in range(30)]
+        dates = [today + timedelta(days=x) for x in range(30)]
         # 日時と曜日の情報を出力
         weekdayJp = {
             'Monday': '月',
@@ -81,19 +80,20 @@ class SpreadSheetClient():
             )
         format_cell_range(sheet, 'A1:C1', fmt)
           
-    def event2calendar(self, events):
+    def event2calendar(self, events=[]):
         result = defaultdict(list)
 
         for event in events:
             start_date = event.start_date
             end_date = event.end_date
             title = event.title
-            
+            print(start_date)
             # start_dateからend_dateまでの日付を生成
-            date_range = [start_date + datetime.timedelta(days=i) for i in range((end_date - start_date).days + 1)]
+            date_range = [start_date + timedelta(days=i) for i in range((end_date - start_date).days + 1)]
             
             # 各日付のtitleをresultに追加
             for date in date_range:
-                result[date.strftime("%Y/%m/%d")].append(title)
+                dateJst = date + timedelta(hours=9)
+                result[dateJst.strftime("%Y/%m/%d")].append(title)
         return result
     

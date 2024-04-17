@@ -38,7 +38,7 @@ export default function Role() {
   }, [authUser])
 
   const handleWomanClick = () => {
-    fetch(`/api/users/${authUser.uid}`, {
+    fetch(`/api/users/${user?.uid}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -56,7 +56,7 @@ export default function Role() {
   };
 
   const handlePartnerClick = () => {
-    fetch(`/api/users/${authUser.uid}`, {
+    fetch(`/api/users/${user?.uid}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

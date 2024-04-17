@@ -9,22 +9,9 @@ interface Params {
 // 特定のIDのユーザーを取得
 export async function GET(req: Request, { params }: { params: Params }) {
   const { id } = params;
-  console.log(req.headers)
-  const res = await fetch(`${DJANGO_USER_API_URL}${id}/`, {
+  return await fetch(`${DJANGO_USER_API_URL}${id}/`, {
     headers: req.headers
   });
-
-  if (!res.ok) {
-    console.error(`Django API Error: ${res.status} ${res.statusText}`);
-    console.error(`Response body: ${await res.text()}`);
-    return NextResponse.json(
-      { error: "Failed to fetch user" },
-      { status: 500 }
-    );
-  }
-
-  const user = await res.json();
-  return NextResponse.json(user);
 }
 
 // 特定のIDのユーザーを更新

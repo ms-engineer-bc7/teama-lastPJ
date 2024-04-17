@@ -1,5 +1,6 @@
 
 from django.shortcuts import render, get_object_or_404
+from django.http import Http404
 from django.http import HttpResponseNotAllowed
 from .models import User, Event, SpreadSheet, Viewer
 from .serializers import UserSerializer, EventSerializer, SpreadSheetSerializer,ViewerSerializer
@@ -27,6 +28,11 @@ class UserViewSet(viewsets.ModelViewSet): #Userモデルに対するCRUD操作
     def retrieve(self, request, uid):
         fbClient = FirebaseClient()
         res = fbClient.verify_token(self.request)
+        print(res.status_code)
+        if res.status_code == 404:
+            raise Http404(
+                 "User Not Found."
+            )
         if res.status_code != 200:
             raise HttpResponseNotAllowed(
                 "Unauthorized firebase token."
