@@ -1,6 +1,7 @@
+
 from django.shortcuts import render, get_object_or_404
-from .models import User, Event, SpreadSheet
-from .serializers import UserSerializer, EventSerializer, SpreadSheetSerializer
+from .models import User, Event, SpreadSheet, Viewer
+from .serializers import UserSerializer, EventSerializer, SpreadSheetSerializer,ViewerSerializer
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from django.http import JsonResponse
@@ -10,6 +11,9 @@ from django.conf import settings
 from .libs.spreadsheet import SpreadSheetClient
 
 
+class ViewerViewSet(viewsets.ModelViewSet): #Viewerモデルに対するCRUD操作
+    queryset = Viewer.objects.all()
+    serializer_class = ViewerSerializer
 
 class UserViewSet(viewsets.ModelViewSet): #Userモデルに対するCRUD操作
     queryset = User.objects.all()

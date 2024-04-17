@@ -45,20 +45,38 @@ export default function Login() {
       router.push("/error");
     }
   };
-
   return (
-    <>
-      <div className="flex flex-col items-center justify-center min-h-screen py-2">
+    // 親のdivをflexコンテナとして定義
+    <div className="flex min-h-screen bg-white">
+      {/* 画像のdiv */}
+      <div className="w-1/2 flex justify-center items-center">
+        <img src="/toppage.png" alt="toppage-image" />
+      </div>
+
+      {/* ボタンのdiv */}
+      <div className="w-1/2 flex flex-col justify-center items-center">
+        {/* 新規登録ボタン */}
         <button
-          className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-center text-sm font-semibold text-white"
+          className="mb-4 rounded-md bg-sky-500 px-6 py-3 text-sm font-semibold text-white hover:bg-sky-600"
           onClick={signInWithGoogle}
         >
-          ログイン
+          新規登録
         </button>
+
+        {/* グーグルでログインボタン */}
+        <button
+          className="rounded-md bg-green-300 px-6 py-3 text-sm font-semibold text-white hover:bg-green-400"
+          onClick={signInWithGoogle}
+        >
+          グーグルでログイン
+        </button>
+
+        {/* トップページに戻るリンク */}
         <p className="mt-5">
           <Link href="/">トップページに戻る</Link>
         </p>
       </div>
-    </>
+    </div>
   );
 }
+
