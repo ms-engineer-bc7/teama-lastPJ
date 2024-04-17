@@ -131,3 +131,10 @@ load_dotenv()
 
 # 環境変数から OPENAI_API_KEY を取得
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+
+# gcpのenv
+GCP_PROJECT_ID = os.getenv('GCP_PROJECT_ID')
+GCP_PRIVATE_KEY_ID = os.getenv('GCP_PRIVATE_KEY_ID')
+GCP_PRIVATE_KEY = os.getenv('GCP_PRIVATE_KEY')
+GCP_CLIENT_MAIL = os.getenv('GCP_CLIENT_MAIL')
+GCP_CLIENT_ID = os.getenv('GCP_CLIENT_ID')

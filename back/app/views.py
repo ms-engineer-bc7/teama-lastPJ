@@ -1,13 +1,15 @@
-from django.shortcuts import render
-from .models import User, Event, Viewer
-from .serializers import UserSerializer, EventSerializer, ViewerSerializer
-from rest_framework import viewsets
+
+from django.shortcuts import render, get_object_or_404
+from .models import User, Event, SpreadSheet, Viewer
+from .serializers import UserSerializer, EventSerializer, SpreadSheetSerializer,ViewerSerializer
+from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
-from rest_framework.response import Response
 from django.http import JsonResponse
 from langchain_openai import OpenAI
 from langchain.prompts import PromptTemplate
 from django.conf import settings
+from .libs.spreadsheet import SpreadSheetClient
+
 
 class ViewerViewSet(viewsets.ModelViewSet): #Viewerモデルに対するCRUD操作
     queryset = Viewer.objects.all()
@@ -15,7 +17,7 @@ class ViewerViewSet(viewsets.ModelViewSet): #Viewerモデルに対するCRUD操�
 
 class UserViewSet(viewsets.ModelViewSet): #Userモデルに対するCRUD操作
     queryset = User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserSerializer    
 
 class EventViewSet(viewsets.ModelViewSet): #ModelViewSetを継承。CRUD操作を行うための一連のビューが自動的に作成
     queryset = Event.objects.all() #Eventモデルの全オブジェクトを取得
@@ -54,3 +56,60 @@ class EventViewSet(viewsets.ModelViewSet): #ModelViewSetを継承。CRUD操作�
 
         # 生成されたメッセージを JSON 形式で返す
         return JsonResponse({'message': response})
+    
+    def perform_create(self, serializer):
+        serializer.save()
+        # sperad sheetの更新も行う
+        self.update_spreadsheet(serializer.validated_data["user"])
+        
+    
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        # sperad sheetの更新も行う
+        self.update_spreadsheet(serializer.validated_data["user"])
+
+    
+    def update_spreadsheet(self, user=None):
+        ss = SpreadSheet.objects.filter(user=user)
+        if not ss:
+            return
+        events = Event.objects.filter(user=user)
+        ssClient = SpreadSheetClient()
+        ssClient.update_calendar(ss.first().sheet_id, events)
+
+
+
+class SpreadSheetViewSet(viewsets.ModelViewSet):
+    queryset = SpreadSheet.objects.all()
+    serializer_class = SpreadSheetSerializer
+    user = None
+
+    # anyone has permit only get, create
+    def get_permissions(self):
+        if self.action in ['update', 'partial_update', 'destroy']:
+            return [permissions.IsAdminUser()]
+        return [permissions.AllowAny()]
+
+    def get_queryset(self):
+        user_id = int(self.request.GET.get('user', 0))
+        self.user = get_object_or_404(User, pk=user_id)
+        return SpreadSheet.objects.filter(user=self.user)
+    
+    def perform_create(self, serializer):
+        # POSTの際は、queryset呼ばれないので、強制的に呼び出し
+        self.get_queryset()
+
+        # spreadsheetの設定
+        ssClient = SpreadSheetClient()
+        shared_email = serializer.validated_data['shared_email']
+        sheet = ssClient.create_spreadsheet(self.user.email, shared_email, 'Sharecleカレンダー共有')
+        
+        # updateカレンダー
+        ssClient.update_calendar(sheet.id)
+        
+        #DBに保存
+        serializer.save(
+            sheet_id=sheet.id,
+            user=self.user,
+            shared_email=shared_email,
+        )
