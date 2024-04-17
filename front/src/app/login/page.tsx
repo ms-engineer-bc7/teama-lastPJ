@@ -9,10 +9,7 @@ import { redirect } from "next/navigation";
 export default function Login() {
   const [user] = useAuthState(auth);
   const router = useRouter();
-  const [duser, setDuser] = useState<User>()
-  useEffetc(() => {
-    fetch("/api/user/?uid=").then(res => setDuser(res.json()))
-  })
+
   const signInWithGoogle = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
