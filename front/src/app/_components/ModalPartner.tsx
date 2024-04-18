@@ -22,8 +22,8 @@ export default function ModalPartner({
   };
 
   return ReactDOM.createPortal(
-    <div
-      className="fixed inset-0 bg-black bg-opacity-50 z-40 flex justify-center items-center"
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex justify-center items-center"
+        
       onClick={onClose}
     >
       <div

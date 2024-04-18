@@ -32,33 +32,12 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  try {
-    const user = await req.json();
-    const res = await fetch(DJANGO_USER_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(user),
-    });
-
-    if (!res.ok) {
-      console.error(`Django API Error: ${res.status} ${res.statusText}`);
-      console.error(`Response body: ${await res.text()}`);
-      return NextResponse.json(
-        { error: "Failed to create user" },
-        { status: 500 }
-      );
-    }
-
-    console.log("User created successfully");
-    console.log(user);
-    return NextResponse.json({ message: "User created" });
-  } catch (error) {
-    console.error("Error creating user:", error);
-    return NextResponse.json(
-      { error: "Failed to create user" },
-      { status: 500 }
-    );
-  }
+  const user = await req.json();
+  return await fetch(DJANGO_USER_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(user),
+  });
 }

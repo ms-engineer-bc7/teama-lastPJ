@@ -1,14 +1,18 @@
 
 from django.shortcuts import render, get_object_or_404
+from django.http import Http404
+from django.http import HttpResponseNotAllowed
 from .models import User, Event, SpreadSheet, Viewer
 from .serializers import UserSerializer, EventSerializer, SpreadSheetSerializer,ViewerSerializer
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
+from rest_framework.response import Response
 from django.http import JsonResponse
 from langchain_openai import OpenAI
 from langchain.prompts import PromptTemplate
 from django.conf import settings
 from .libs.spreadsheet import SpreadSheetClient
+from .libs.firebase import FirebaseClient
 
 
 class ViewerViewSet(viewsets.ModelViewSet): #Viewerモデルに対するCRUD操作
@@ -17,7 +21,23 @@ class ViewerViewSet(viewsets.ModelViewSet): #Viewerモデルに対するCRUD操�
 
 class UserViewSet(viewsets.ModelViewSet): #Userモデルに対するCRUD操作
     queryset = User.objects.all()
-    serializer_class = UserSerializer    
+    serializer_class = UserSerializer  
+    lookup_field = 'uid'
+
+    # userの詳細データ取得時に、firebase tokenを確認する
+    def retrieve(self, request, uid):
+        fbClient = FirebaseClient()
+        res = fbClient.verify_token(self.request)
+        print(res.status_code)
+        if res.status_code == 404:
+            raise Http404(
+                 "User Not Found."
+            )
+        if res.status_code != 200:
+            raise HttpResponseNotAllowed(
+                "Unauthorized firebase token."
+            )
+        return res
 
 class EventViewSet(viewsets.ModelViewSet): #ModelViewSetを継承。CRUD操作を行うための一連のビューが自動的に作成
     queryset = Event.objects.all() #Eventモデルの全オブジェクトを取得
@@ -57,16 +77,34 @@ class EventViewSet(viewsets.ModelViewSet): #ModelViewSetを継承。CRUD操作�
         # 生成されたメッセージを JSON 形式で返す
         return JsonResponse({'message': response})
     
+    # listを取得時、firebase tokenを確認し、そのユーザーの情報を取得する
+    def list(self, request):
+        fbClient = FirebaseClient()
+        res = fbClient.verify_token(self.request)
+        if res.status_code != 200:
+            raise HttpResponseNotAllowed(
+                "Unauthorized firebase token."
+            )
+        user = fbClient.get_user()
+        queryset = Event.objects.filter(user=user)
+        serializer = EventSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+
     def perform_create(self, serializer):
+        # dbに保存
         serializer.save()
+
         # sperad sheetの更新も行う
-        self.update_spreadsheet(serializer.validated_data["user"])
+        self.update_spreadsheet(serializer.validated_data['user'])
         
     
     def perform_update(self, serializer):
+        # dbに保存
         instance = serializer.save()
+
         # sperad sheetの更新も行う
-        self.update_spreadsheet(serializer.validated_data["user"])
+        self.update_spreadsheet(instance.user)
 
     
     def update_spreadsheet(self, user=None):
@@ -78,7 +116,6 @@ class EventViewSet(viewsets.ModelViewSet): #ModelViewSetを継承。CRUD操作�
         ssClient.update_calendar(ss.first().sheet_id, events)
 
 
-
 class SpreadSheetViewSet(viewsets.ModelViewSet):
     queryset = SpreadSheet.objects.all()
     serializer_class = SpreadSheetSerializer
@@ -86,30 +123,46 @@ class SpreadSheetViewSet(viewsets.ModelViewSet):
 
     # anyone has permit only get, create
     def get_permissions(self):
-        if self.action in ['update', 'partial_update', 'destroy']:
+        if self.action in ['get', 'update', 'partial_update', 'destroy']:
             return [permissions.IsAdminUser()]
         return [permissions.AllowAny()]
-
-    def get_queryset(self):
-        user_id = int(self.request.GET.get('user', 0))
-        self.user = get_object_or_404(User, pk=user_id)
-        return SpreadSheet.objects.filter(user=self.user)
+    
+     # listを取得時、firebase tokenを確認し、そのユーザーの情報を取得する
+    def list(self, request):
+        fbClient = FirebaseClient()
+        res = fbClient.verify_token(self.request)
+        if res.status_code != 200:
+            raise HttpResponseNotAllowed(
+                "Unauthorized firebase token."
+            )
+        user = fbClient.get_user()
+        queryset = SpreadSheet.objects.filter(user=user)
+        serializer = SpreadSheetSerializer(queryset, many=True)
+        return Response(serializer.data)
     
     def perform_create(self, serializer):
-        # POSTの際は、queryset呼ばれないので、強制的に呼び出し
-        self.get_queryset()
-
+        # firebase tokenからuserデータを取得する
+        fbClient = FirebaseClient()
+        res = fbClient.verify_token(self.request)
+        if res.status_code != 200:
+            raise HttpResponseNotAllowed(
+                "Unauthorized firebase token."
+            )
+        # firebaseの情報からUser情報を取得
+        user = fbClient.get_user()
         # spreadsheetの設定
         ssClient = SpreadSheetClient()
         shared_email = serializer.validated_data['shared_email']
-        sheet = ssClient.create_spreadsheet(self.user.email, shared_email, 'Sharecleカレンダー共有')
+        sheet = ssClient.create_spreadsheet(user.email, shared_email, 'Sharecleカレンダー共有')
         
+        events = Event.objects.filter(user=user)
+
         # updateカレンダー
-        ssClient.update_calendar(sheet.id)
+        ssClient.update_calendar(sheet.id, events)
         
         #DBに保存
         serializer.save(
             sheet_id=sheet.id,
-            user=self.user,
+            user=user,
             shared_email=shared_email,
         )

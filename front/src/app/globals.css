@@ -27,3 +27,17 @@ html {
   max-width: 400px;
   width: 100%;
 }
+
+/* TODO カレンダーイベントの色を変える場所 */
+.fc-event {
+  background-color: red !important;
+  color: #fff !important;
+}
+
+.fc-h-event {
+  border: none;
+}
+
+.fc-media-screen {
+  margin: 30px;
+}
