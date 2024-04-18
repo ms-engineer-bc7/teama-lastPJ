@@ -21,7 +21,7 @@ export default function Login() {
         email: result.user.email,
       };
       // databaseにデータが存在しているか確認
-      const res = await getUserInfo(result.user)
+      const res = await getUserInfo(result.user);
 
       // 404の場合、ユーザーを作成
       if (res.status == 404) {
@@ -32,18 +32,18 @@ export default function Login() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(userData),
-        }).then(res => {
-          router.push("/role")
-        }).catch(err => alert('ユーザーの作成に失敗しました。'));
+        })
+          .then((res) => {
+            router.push("/role");
+          })
+          .catch((err) => alert("ユーザーの作成に失敗しました。"));
       } else {
         // 画面遷移
-        const data = await res.json()
-        if (data.role === "")
-          router.push("/role")
-        if (data.role === "user")
-          router.push("/calendar")
-        if (data.role === "partner")
-          router.push("/partner")
+        console.log(res);
+        const data = await res.json();
+        if (data.role === "") router.push("/role");
+        if (data.role === "user") router.push("/calendar");
+        if (data.role === "partner") router.push("/partner");
       }
     } catch (error) {
       console.error("サインインに失敗しました:", error);

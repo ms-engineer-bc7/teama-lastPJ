@@ -9,24 +9,36 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@fullcalendar/common": "^5.x",
+    "@fullcalendar/common": "^5.11.5",
     "@fullcalendar/core": "^5.x",
-    "@fullcalendar/daygrid": "^5.x",
-    "@fullcalendar/interaction": "^5.x",
+    "@fullcalendar/daygrid": "^5.11.5",
+    "@fullcalendar/interaction": "^5.11.5",
     "@fullcalendar/react": "^5.11.5",
+    "firebase": "^10.11.0",
     "next": "14.1.4",
+    "next-transpile-modules": "^10.0.1",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-firebase-hooks": "^5.1.1",
+    "react-modal": "^3.16.1"
   },
   "devDependencies": {
+    "@firebase/app": "^0.10.1",
+    "@firebase/auth": "^1.7.1",
+    "@types/firebase": "^3.2.1",
     "@types/node": "^20",
     "@types/react": "^18.2.79",
     "@types/react-dom": "^18",
+    "@types/react-modal": "^3.16.3",
+    "@typescript-eslint/eslint-plugin": "^7.7.0",
+    "@typescript-eslint/parser": "^7.7.0",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
     "eslint-config-next": "14.1.4",
-    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "postcss": "^8",
+    "prettier": "^3.2.5",
     "tailwindcss": "^3.3.0",
     "typescript": "^5"
   }
