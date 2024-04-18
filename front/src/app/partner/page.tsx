@@ -30,24 +30,26 @@ export default function Partner() {
   const [authUser] = useAuthState(auth);
 
   // GET の処理
-  useEffect(() => {
-    async function fetchData() {
-      const events = await getFetchData(authUser?.accessToken);
-      // const events = await getFetchData();
-      console.log("getした値(event)", events);
-      setEvents(events);
-    }
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     // const events = await getFetchData(authUser?.accessToken);
+  //     // const events = await getFetchData();
+  //     console.log("getした値(event)", events);
+  //     setEvents(events);
+  //   }
+  //   fetchData();
+  // }, []);
 
   // ユーザーが予定をクリックしたらモーダルが開き、詳細が見れる
   const handleEventClick = (clickInfo: EventClickArg) => {
     console.log("予定クリック時:イベント", clickInfo.event);
     setSelectedEvent({
-      id: clickInfo.event.id,
-      title: clickInfo.event.title,
-      start: clickInfo.event.startStr,
-      end: clickInfo.event.endStr,
+      event: {
+        id: Number(clickInfo.event.id),
+        title: clickInfo.event.title,
+        start: clickInfo.event.startStr,
+        end: clickInfo.event.endStr,
+      },
     });
     setIsModalOpen(true);
   };

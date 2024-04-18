@@ -3,6 +3,8 @@ export interface EventInfo {
   event: {
     id: number;
     title: string;
+    start?: string;
+    end?: string;
   };
 }
 

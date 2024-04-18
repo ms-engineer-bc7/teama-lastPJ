@@ -4,9 +4,9 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  experimental: {
-    appDir: true,
-  },
+  // experimental: {
+  //   appDir: true,
+  // },
   webpack: (config, { isServer, dev }) => {
     if (!isServer && dev) {
       config.watchOptions = {
