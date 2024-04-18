@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin, { EventClickArg } from "@fullcalendar/interaction";
+import interactionPlugin from "@fullcalendar/interaction";
+import { EventClickArg } from "@fullcalendar/common";
 import { EventInput } from "@fullcalendar/core";
 import { EventContentArg } from "@fullcalendar/common";
 import ModalPartner from "../_components/ModalPartner";
@@ -28,10 +29,12 @@ export default function Partner() {
   const handleEventClick = (clickInfo: EventClickArg) => {
     console.log("予定クリック時:イベント", clickInfo.event);
     setSelectedEvent({
-      id: clickInfo.event.id,
-      title: clickInfo.event.title,
-      start: clickInfo.event.startStr,
-      end: clickInfo.event.endStr,
+      event: {
+        id: Number(clickInfo.event.id),
+        title: clickInfo.event.title,
+        start: clickInfo.event.startStr,
+        end: clickInfo.event.endStr,
+      },
     });
     setIsModalOpen(true);
   };

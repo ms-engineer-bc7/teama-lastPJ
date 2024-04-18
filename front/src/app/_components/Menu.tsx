@@ -1,8 +1,9 @@
 "use client";
-
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCalendar } from "@fortawesome/free-regular-svg-icons";
 
 interface MenuItem {
   name: string;
@@ -11,7 +12,11 @@ interface MenuItem {
 }
 
 const menuItems: MenuItem[] = [
-  { name: "Calendar", href: "/calendar", icon: <DashboardIcon /> },
+  {
+    name: "Calendar",
+    href: "/calendar",
+    icon: <FontAwesomeIcon icon={faCalendar} style={{ fontSize: "21px" }} />,
+  },
   { name: "Price", href: "/price", icon: <WorkoutsIcon /> },
   { name: "Counseling", href: "/counseling", icon: <MealPlanIcon /> },
 ];
@@ -59,12 +64,13 @@ export default function Menu() {
                 onClick={() => handleMenuItemClick(item.href)}
               >
                 {item.icon && (
-                  <div className="bg-green-500 p-3 rounded-l-lg text-white">
+                  <div className="flex items-center justify-center p-3 rounded-l-lg">
                     {item.icon}
                   </div>
                 )}
                 <span
-                  className={`ml-3 text-lg font-medium ${
+                  style={{ marginTop: "1.8px" }}
+                  className={`ml-2 text-lg font-medium ${
                     item.icon ? "ml-5" : ""
                   }`}
                 >

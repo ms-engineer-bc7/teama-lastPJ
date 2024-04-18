@@ -14,6 +14,8 @@ RUN npm install --save-dev --legacy-peer-deps @typescript-eslint/eslint-plugin @
 RUN npm install @fullcalendar/common @fullcalendar/daygrid @fullcalendar/react @fullcalendar/interaction next-transpile-modules
 RUN npm install react-modal
 RUN npm install --save-dev @types/react-modal
+RUN npm install --save @fortawesome/fontawesome-svg-core @fortawesome/free-regular-svg-icons @fortawesome/react-fontawesome
+
 
 # ソースコードをコピー
 COPY . .

@@ -1,12 +1,17 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import styles from "./modal.module.css";
+import { ModalPartnerProps } from "../types";
 
-export default function ModalPartner({ isOpen, onClose, event }) {
+export default function ModalPartner({
+  isOpen,
+  onClose,
+  event,
+}: ModalPartnerProps) {
   if (!isOpen) return null;
 
   // 日時の文字列を表示用にフォーマットする関数
-  const formatDate = (isoString) => {
+  const formatDate = (isoString: string) => {
     const date = new Date(isoString);
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -18,13 +23,11 @@ export default function ModalPartner({ isOpen, onClose, event }) {
 
   return ReactDOM.createPortal(
     <div
-      className="modal"
       className="fixed inset-0 bg-black bg-opacity-50 z-40 flex justify-center items-center"
       onClick={onClose}
     >
       <div
         style={{ maxWidth: "400px" }}
-        className="modal-content"
         className="bg-white p-8 rounded-md shadow-lg w-full z-50"
         onClick={(e) => e.stopPropagation()}
       >
