@@ -127,3 +127,4 @@ local_settings.py
 
 .env
 db.sqlite3
+last-pj-login-firebase-adminsdk.json

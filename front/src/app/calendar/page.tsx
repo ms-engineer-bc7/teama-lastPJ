@@ -25,7 +25,7 @@ let eventGuid = 0;
 export default function Calendar() {
   const router = useRouter();
   const [authUser] = useAuthState(auth);
-  const [user, setUser] = useState<User>()
+  const [user, setUser] = useState<User>();
   const [events, setEvents] = useState<EventInput[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
@@ -38,24 +38,22 @@ export default function Calendar() {
 
   // GET の処理
   useEffect(() => {
-    if (!authUser) return
+    if (!authUser) return;
     getUserInfo(authUser)
-      .then(async res => {
+      .then(async (res) => {
         const data = await res.json();
-        setUser(data)
-        if (data.role == "")
-          router.push('/role')
-        if (data.role == "partner")
-          router.push('/partner')
+        setUser(data);
+        if (data.role == "") router.push("/role");
+        if (data.role == "partner") router.push("/partner");
       })
-      .catch(err => {
-        router.push('/login')
-      })
+      .catch((err) => {
+        router.push("/login");
+      });
 
     async function fetchData() {
-      const events = await getFetchData(authUser.accessToken);
-      console.log("getした値(event)", events);
-      setEvents(events);
+      //   const events = await getFetchData(authUser?.accessToken);
+      //   console.log("getした値(event)", events);
+      //   setEvents(events);
     }
     fetchData();
   }, [authUser]);
@@ -112,7 +110,12 @@ export default function Calendar() {
     // POST の処理
     try {
       // POST処理を実行し結果を取得
-      const result = await postFetchData(eventTitle, startDate, endDate, user!.id);
+      const result = await postFetchData(
+        eventTitle,
+        startDate,
+        endDate,
+        user!.id
+      );
       if (!result.error) {
         // POST処理が成功したら、カレンダーにイベントを追加する
         // サーバーから返されたイベントIDを使用
