@@ -30,15 +30,17 @@ export default function Partner() {
   const [authUser] = useAuthState(auth);
 
   // GET の処理
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     // const events = await getFetchData(authUser?.accessToken);
-  //     // const events = await getFetchData();
-  //     console.log("getした値(event)", events);
-  //     setEvents(events);
-  //   }
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    if (!authUser) return;
+    async function fetchData() {
+      console.log(authUser);
+      const events = await getFetchData(authUser.accessToken);
+      // const events = await getFetchData();
+      console.log("getした値(event)", events);
+      setEvents(events);
+    }
+    fetchData();
+  }, [authUser]);
 
   // ユーザーが予定をクリックしたらモーダルが開き、詳細が見れる
   const handleEventClick = (clickInfo: EventClickArg) => {

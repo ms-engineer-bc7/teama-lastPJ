@@ -39,6 +39,7 @@ export default function Login() {
           .catch((err) => alert("ユーザーの作成に失敗しました。"));
       } else {
         // 画面遷移
+        console.log(res);
         const data = await res.json();
         if (data.role === "") router.push("/role");
         if (data.role === "user") router.push("/calendar");
