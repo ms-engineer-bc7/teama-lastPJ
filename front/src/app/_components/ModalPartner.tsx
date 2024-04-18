@@ -22,13 +22,13 @@ export default function ModalPartner({
   };
 
   return ReactDOM.createPortal(
-    <div
-      className="modal fixed inset-0 bg-black bg-opacity-50 z-40 flex justify-center items-center"
+    <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex justify-center items-center"
+        
       onClick={onClose}
     >
       <div
         style={{ maxWidth: "400px" }}
-        className="modal-content bg-white p-8 rounded-md shadow-lg w-full z-50"
+        className="bg-white p-8 rounded-md shadow-lg w-full z-50"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-lg font-bold mb-4">イベントの詳細</h2>
