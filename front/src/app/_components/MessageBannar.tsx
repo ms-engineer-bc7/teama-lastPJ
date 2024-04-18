@@ -2,6 +2,8 @@
 import { useState, useEffect, useRef } from "react";
 import styles from "./banner.module.css";
 
+const IMAGE_URL = "/img/dog.png";
+
 export default function MessageBannar({ id }: { id: string }) {
   const [message, setMessage] = useState("");
   const [error, setError] = useState(null);
@@ -36,13 +38,8 @@ export default function MessageBannar({ id }: { id: string }) {
         // レスポンスからJSONデータを取得
         const data = await response.json();
         console.log("Received data:", data);
-        setMessage(data.message); // 取得したメッセージを状態に設定
+        setMessage(data.message.substring(0, 200)); //取得したメッセージ200文字
         setShowBanner(true); // バナーを表示
-
-        // 5秒後にバナーを非表示 今は短めに設定
-        setTimeout(() => {
-          hideBanner();
-        }, 5000);
       } catch (error: any) {
         console.error("Error:", error);
         setError(error.message);
@@ -54,29 +51,22 @@ export default function MessageBannar({ id }: { id: string }) {
     fetchMessage(); //関数を呼び出し
   }, [id]); //idが変更された時にuseEffectを実行
 
-  // バナー　CSSフェードアウトと同時に上にスライドして消えるアニメーション追加
-  //バナーを非表示にする関数
-  const hideBanner = () => {
-    const banner = document.getElementById("notification-banner");
-    if (banner) {
-      banner.style.opacity = "0"; // バナーをフェードアウト
-      banner.style.transform = "translateY(-100%)"; // バナーをスライドアップ
-      setTimeout(() => {
-        // アニメーションの完了を1秒後に待つ
-        setShowBanner(false);
-      }, 1000); // アニメーションの完了後にバナーの状態を非表示に設定
-    }
-  };
-
   return (
     <div>
       {showBanner && (
-        <div
-          id="notification-banner"
-          className={`fixed top-0 inset-x-0 bg-blue-500 text-white text-sm p-4 text-center shadow-md z-50 ${styles.notificationBanner}`}
-          ref={bannerRef}
-        >
-          {message}
+        <div className={styles.notificationContainer}>
+          <div
+            id="notification-banner"
+            className={styles.notificationBanner}
+            ref={bannerRef}
+          >
+            {message}
+            <img
+              src={IMAGE_URL}
+              alt="Commenting Dog"
+              className={styles.commentImage}
+            />
+          </div>
         </div>
       )}
       {error && <p className="text-red-500">{error}</p>}

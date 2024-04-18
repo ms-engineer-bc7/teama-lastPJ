@@ -1,5 +1,52 @@
-/* 通知バナーが滑らかにフェードアウトしつつ上にはける */
+/* バナーと画像のコンテナスタイル */
+.notificationContainer {
+  position: fixed;
+  bottom: 3rem; /* 画面の下からの余白 */
+  right: 2rem; /* 画面の右からの余白 */
+  z-index: 50; /* 他の要素の上に表示するためのz-index */
+}
+
+/* 通知バナー */
 .notificationBanner {
-  transition: opacity 1s ease-in-out, transform 1s ease-in-out;
-  will-change: opacity, transform;
+  position: relative; /* 子要素の絶対位置指定の基準に */
+  display: inline-block; /* バナーの内容に基づいてサイズを変更する */
+  bottom: 3rem; /* 画面の下からの余白 */
+  right: 7rem; /* 画面の右からの余白 */
+  max-width: 520px; /* バナーの最大幅 */
+  padding: 1.25rem; /* 内側の余白 */
+  background-color: #007bff; /* バナーの背景色 */
+  color: white; /* テキストの色 */
+  text-align: left; /* テキストを左寄せに変更 */
+  line-height: 1.5; /* 行間を広げる */
+  letter-spacing: 0.03rem; /* 文字間を広げる */
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2); /* ぼかし */
+  border-radius: 0.75rem; /* 角の丸み */
+  z-index: 50; /* 他の要素の上に表示するためのz-index */
+}
+
+/* バナーのフキダシしっぽ */
+.notificationBanner::after {
+  content: "";
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  bottom: 10px; /* バナーの下にしっぽが出るように調整 */
+  right: 0px; /* バナーの右端からの位置を調整 */
+  background-color: #007bff; /* バナーと同じ背景色 */
+  border-radius: 0 0 20px 0; /* しっぽの丸みを調整 */
+  box-shadow: 4px 4px 0 -3px #007bff inset; /* しっぽの影の位置と大きさを調整 */
+  transform: rotate(45deg); /* しっぽを傾ける */
+  transform-origin: 100% 100%; /* 回転の基点を右下に */
+  z-index: 49; /* バナーの前に表示 */
+}
+
+/* フキダシを言っている画像 */
+.commentImage {
+  position: absolute;
+  width: 100px; /* 画像の幅を指定 */
+  height: 100px; /* 画像の高さを指定 */
+  bottom: -5px; /* フキダシの位置に合わせて調整 */
+  right: -1rem; /* バナーの右端からの位置を調整 */
+  transform: translateX(100%); /* バナーの右側に画像を配置 */
+  z-index: 60; /* フキダシより前に表示 */
 }
