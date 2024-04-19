@@ -52,9 +52,9 @@ export default function Calendar() {
       });
 
     async function fetchData() {
-      //   const events = await getFetchData(authUser?.accessToken);
-      //   console.log("getした値(event)", events);
-      //   setEvents(events);
+        const events = await getFetchData(authUser?.accessToken);
+        console.log("getした値(event)", events);
+        setEvents(events);
     }
     fetchData();
   }, [authUser]);
