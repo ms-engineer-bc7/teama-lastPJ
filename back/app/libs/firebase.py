@@ -35,6 +35,9 @@ class FirebaseClient():
             return JsonResponse({'error': 'Invalid token format'}, status=400)
         try:
             token = auth_header.split(' ')[1]
+            # リクエストからトークンを抽出
+            # token = request.headers.get('Authorization').split('Bearer ')[1]
+            print("Received accessToken:", token)  # 受け取ったトークンのログ出力
             # トークンの検証
             decoded_token = auth.verify_id_token(token)
             uid = decoded_token['uid']

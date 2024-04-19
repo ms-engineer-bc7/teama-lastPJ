@@ -7,12 +7,15 @@ from .serializers import UserSerializer, EventSerializer, SpreadSheetSerializer,
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
+# from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import AuthenticationFailed
 from django.http import JsonResponse
 from langchain_openai import OpenAI
 from langchain.prompts import PromptTemplate
 from django.conf import settings
 from .libs.spreadsheet import SpreadSheetClient
 from .libs.firebase import FirebaseClient
+
 
 
 class ViewerViewSet(viewsets.ModelViewSet): #Viewerモデルに対するCRUD操作
@@ -31,13 +34,13 @@ class UserViewSet(viewsets.ModelViewSet): #Userモデルに対するCRUD操作
         print(res.status_code)
         if res.status_code == 404:
             raise Http404(
-                 "User Not Found."
+                "User Not Found."
             )
         if res.status_code != 200:
             raise HttpResponseNotAllowed(
                 "Unauthorized firebase token."
             )
-        return res
+        return fbClient.get_user() #ログインしているユーザー情報取得
 
 class EventViewSet(viewsets.ModelViewSet): #ModelViewSetを継承。CRUD操作を行うための一連のビューが自動的に作成
     queryset = Event.objects.all() #Eventモデルの全オブジェクトを取得
@@ -81,12 +84,45 @@ class EventViewSet(viewsets.ModelViewSet): #ModelViewSetを継承。CRUD操作�
     def list(self, request):
         fbClient = FirebaseClient()
         res = fbClient.verify_token(self.request)
+        # リクエストからトークンを抽出
+        token = request.headers.get('Authorization').split('Bearer ')[1]
+        print("Received accessToken:", token)  # 受け取ったトークンのログ出力
+
         if res.status_code != 200:
-            raise HttpResponseNotAllowed(
+            # raise HttpResponseNotAllowed(
+            # raise PermissionDenied( //
+            raise AuthenticationFailed(
                 "Unauthorized firebase token."
             )
-        user = fbClient.get_user()
-        queryset = Event.objects.filter(user=user)
+        user = fbClient.get_user()#ログインしているユーザー情報取得
+        print(user)
+        print(user.email)
+        print(user.partner)
+        print(user.id)
+
+        if user.role == 'user':
+        # 女性ユーザーの場合は、そのユーザーが作成した予定を取得
+            queryset = Event.objects.filter(user=user)
+
+        else: #user.role == 'partner':
+        # パートナーの場合、許可されたメールアドレスに紐づく予定を取得 
+            # allowed_emails = Viewer.objects.filter(
+            #     user=user
+            # ).values_list('allowed_email', flat=True)
+            # queryset = Event.objects.filter(
+            #     Q(user__role='user') & Q(user__email__in=allowed_emails)
+            # )
+            # queryset = Event.objects.filter(
+            #     # eventviewer__partner_email=user.email
+            #     # user__partner_email=user.email
+            # )
+            # .values_list('id', flat=True)
+            user_ids = User.objects.filter(partner=user.id)
+            # print(user_ids)
+            # user_ids = [ 3 ]
+            queryset = Event.objects.filter(user_id__in=user_ids)
+            # queryset = Event.objects.filter(user=user)
+
         serializer = EventSerializer(queryset, many=True)
         return Response(serializer.data)
 
