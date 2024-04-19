@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar } from "@fortawesome/free-regular-svg-icons";
+import { faHandHoldingDollar } from "@fortawesome/free-solid-svg-icons";
+import { faHeart } from "@fortawesome/free-regular-svg-icons";
 
 interface MenuItem {
   name: string;
@@ -17,8 +19,21 @@ const menuItems: MenuItem[] = [
     href: "/calendar",
     icon: <FontAwesomeIcon icon={faCalendar} style={{ fontSize: "21px" }} />,
   },
-  { name: "Price", href: "/price", icon: <WorkoutsIcon /> },
-  { name: "Counseling", href: "/counseling", icon: <MealPlanIcon /> },
+  {
+    name: "Price",
+    href: "/price",
+    icon: (
+      <FontAwesomeIcon
+        icon={faHandHoldingDollar}
+        style={{ fontSize: "21px" }}
+      />
+    ),
+  },
+  {
+    name: "Counseling",
+    href: "/counseling",
+    icon: <FontAwesomeIcon icon={faHeart} style={{ fontSize: "21px" }} />,
+  },
 ];
 
 export default function Menu() {
@@ -35,15 +50,17 @@ export default function Menu() {
         style={{ backgroundColor: "#83B99C" }}
         className="flex flex-col justify-center items-center w-full mb-5 px-12 py-10"
       >
-        <div className="avatar mr-3">
-          <Image
-            src="/img/profile.svg"
-            alt="Avatar"
-            width={200}
-            height={200}
-            className="rounded-full"
-          />
-        </div>
+        <Link href={"/dashboard"}>
+          <div className="avatar mr-3">
+            <Image
+              src="/img/profile.svg"
+              alt="Avatar"
+              width={200}
+              height={200}
+              className="rounded-full"
+            />
+          </div>
+        </Link>
         <div className="flex flex-col items-center">
           <h3 className="text-lg font-bold mt-3 text-white">ユーザー名</h3>
           <p className="text-sm mt-2 text-white">ロール</p>
@@ -51,31 +68,42 @@ export default function Menu() {
       </div>
 
       {/* メニュー */}
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center mt-6">
         <nav className="menu bg-white p-3 rounded-lg">
           {menuItems.map((item, index) => (
             <Link href={item.href} key={index} legacyBehavior>
               <a
-                className={`menu-item flex items-center p-3 rounded transition-colors duration-200 ease-in-out mt-4 ${
+                className={`menu-item flex items-center p-3 px-9 rounded transition-colors duration-200 ease-in-out mt-4 mb-7 ${
                   activeMenuItem === item.href
-                    ? "bg-green-300"
-                    : "hover:bg-green-100"
+                    ? "bg-[#83B99C] text-white hover:bg-[#83B99C]"
+                    : "hover:bg-[#83B99C] hover:text-white hover:shadow-md"
                 }`}
+                onMouseEnter={(e) => {
+                  if (activeMenuItem !== item.href) {
+                    e.currentTarget.style.backgroundColor = "#83B99C";
+                    e.currentTarget.style.color = "#FFFFFF";
+                    e.currentTarget.querySelector(".icon").style.color =
+                      "#FFFFFF";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (activeMenuItem !== item.href) {
+                    e.currentTarget.style.backgroundColor = "";
+                    e.currentTarget.style.color = "";
+                    e.currentTarget.querySelector(".icon").style.color = "";
+                  }
+                }}
                 onClick={() => handleMenuItemClick(item.href)}
               >
-                {item.icon && (
-                  <div className="flex items-center justify-center p-3 rounded-l-lg">
-                    {item.icon}
-                  </div>
-                )}
-                <span
-                  style={{ marginTop: "1.8px" }}
-                  className={`ml-2 text-lg font-medium ${
-                    item.icon ? "ml-5" : ""
-                  }`}
+                <div
+                  className="icon w-10 flex justify-center items-center"
+                  style={{
+                    color: activeMenuItem === item.href ? "#FFFFFF" : undefined,
+                  }}
                 >
-                  {item.name}
-                </span>
+                  {item.icon}
+                </div>
+                <span className="ml-3 text-lg font-medium">{item.name}</span>
               </a>
             </Link>
           ))}
@@ -83,25 +111,4 @@ export default function Menu() {
       </div>
     </div>
   );
-}
-
-// Placeholder icon components
-function DashboardIcon() {
-  return null;
-}
-
-function WorkoutsIcon() {
-  return null;
-}
-
-function MealPlanIcon() {
-  return null;
-}
-
-function MessagesIcon() {
-  return null;
-}
-
-function SettingsIcon() {
-  return null;
 }
