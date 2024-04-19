@@ -6,6 +6,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar } from "@fortawesome/free-regular-svg-icons";
 import { faHandHoldingDollar } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
+import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { auth } from "../firebase";
+import { useRouter } from "next/navigation";
 
 interface MenuItem {
   name: string;
@@ -34,11 +37,40 @@ const menuItems: MenuItem[] = [
     href: "/counseling",
     icon: <FontAwesomeIcon icon={faHeart} style={{ fontSize: "21px" }} />,
   },
+  {
+    name: "Logout",
+    href: "/logout",
+    icon: (
+      <FontAwesomeIcon
+        icon={faArrowRightFromBracket}
+        style={{ fontSize: "21px" }}
+      />
+    ),
+  },
 ];
 
 export default function Menu() {
   const [activeMenuItem, setActiveMenuItem] = useState<string | null>(null);
+  const router = useRouter();
 
+  // ログインボタンを押したときの処理
+  const handleClick = (href: string) => {
+    if (href === "/logout") {
+      auth
+        .signOut()
+        .then(() => {
+          // サインアウト成功後、ログイン画面に遷移
+          router.push("/login");
+        })
+        .catch((error) => {
+          console.error("Sign out error", error);
+        });
+    } else {
+      setActiveMenuItem(href);
+    }
+  };
+
+  // メニューをクリックしたときの処理
   const handleMenuItemClick = (href: string) => {
     setActiveMenuItem(href);
   };
@@ -70,43 +102,22 @@ export default function Menu() {
       {/* メニュー */}
       <div className="flex flex-col items-center mt-6">
         <nav className="menu bg-white p-3 rounded-lg">
-          {menuItems.map((item, index) => (
-            <Link href={item.href} key={index} legacyBehavior>
+          {menuItems.map((item, index) =>
+            // Logoutの項目だけ特別な処理を行う
+            item.name === "Logout" ? (
               <a
+                key={index}
+                href={item.href}
                 className={`menu-item flex items-center p-3 px-9 rounded transition-colors duration-200 ease-in-out mt-4 mb-7 ${
                   activeMenuItem === item.href
                     ? "bg-[#83B99C] text-white hover:bg-[#83B99C]"
                     : "hover:bg-[#83B99C] hover:text-white hover:shadow-md"
                 }`}
-                onMouseEnter={(e) => {
-                  if (activeMenuItem !== item.href) {
-                    e.currentTarget.style.backgroundColor = "#83B99C";
-                    e.currentTarget.style.color = "#FFFFFF";
-                    const iconElement = e.currentTarget.querySelector(
-                      ".icon"
-                    ) as HTMLElement; // HTMLElementとしてキャスト
-                    if (iconElement) {
-                      iconElement.style.color = "#FFFFFF"; // 要素が存在する場合のみ色を変更
-                    }
-                  }
+                onClick={(e) => {
+                  e.preventDefault(); // ページ遷移を防ぐ
+                  handleClick(item.href);
                 }}
-                onMouseLeave={(e) => {
-                  if (activeMenuItem !== item.href) {
-                    e.currentTarget.style.backgroundColor = "";
-                    e.currentTarget.style.color = "";
-
-                    // .icon 要素を HTMLElement として取得
-                    const iconElement = e.currentTarget.querySelector(
-                      ".icon"
-                    ) as HTMLElement | null;
-
-                    // iconElement が存在する場合のみスタイルを変更
-                    if (iconElement) {
-                      iconElement.style.color = "";
-                    }
-                  }
-                }}
-                onClick={() => handleMenuItemClick(item.href)}
+                // onClick={() => handleClick(item.href)} // handleClickを呼び出す
               >
                 <div
                   className="icon w-10 flex justify-center items-center"
@@ -118,8 +129,31 @@ export default function Menu() {
                 </div>
                 <span className="ml-3 text-lg font-medium">{item.name}</span>
               </a>
-            </Link>
-          ))}
+            ) : (
+              <Link href={item.href} key={index} legacyBehavior>
+                <a
+                  className={`menu-item flex items-center p-3 px-9 rounded transition-colors duration-200 ease-in-out mt-4 mb-7 ${
+                    activeMenuItem === item.href
+                      ? "bg-[#83B99C] text-white hover:bg-[#83B99C]"
+                      : "hover:bg-[#83B99C] hover:text-white hover:shadow-md"
+                  }`}
+                  onClick={() => handleClick(item.href)}
+                  // onMouseEnterとonMouseLeaveのイベントハンドラはそのままにする
+                >
+                  <div
+                    className="icon w-10 flex justify-center items-center"
+                    style={{
+                      color:
+                        activeMenuItem === item.href ? "#FFFFFF" : undefined,
+                    }}
+                  >
+                    {item.icon}
+                  </div>
+                  <span className="ml-3 text-lg font-medium">{item.name}</span>
+                </a>
+              </Link>
+            )
+          )}
         </nav>
       </div>
     </div>
