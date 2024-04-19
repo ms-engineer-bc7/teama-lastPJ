@@ -40,7 +40,8 @@ class UserViewSet(viewsets.ModelViewSet): #Userモデルに対するCRUD操作
             raise HttpResponseNotAllowed(
                 "Unauthorized firebase token."
             )
-        return fbClient.get_user() #ログインしているユーザー情報取得
+        # return fbClient.get_user() #ログインしているユーザー情報取得
+        return res
 
 class EventViewSet(viewsets.ModelViewSet): #ModelViewSetを継承。CRUD操作を行うための一連のビューが自動的に作成
     queryset = Event.objects.all() #Eventモデルの全オブジェクトを取得
@@ -61,24 +62,61 @@ class EventViewSet(viewsets.ModelViewSet): #ModelViewSetを継承。CRUD操作�
         # OpenAI LLM のインスタンスを作成
         llm = OpenAI(api_key=settings.OPENAI_API_KEY, temperature=0.9)
 
-        # プロンプトテンプレートを定義
-        prompt_template = PromptTemplate(
-            input_variables=["treatment"],
-            template=f"""
-            不妊治療について頑張って治療を受ける人に向けて温かい言葉をかけてください。
-            治療内容: {treatment}。
-            励ましや応援する優しい言葉をお願いします。
-            次に向かう感じや成功を目指すようなプレッシャーに感じるような言葉は避けて、
-            治療前の辛い気持ちに対して共感や寄り添い、支えになるようにお願いします。
-            大事な人に言うように、その人に思いやりを持った会話口調で、敬語でお願いします。
-            """
-        )
+        # # プロンプトテンプレートを定義
+        # prompt_template = PromptTemplate(
+        #     input_variables=["treatment"],
+        #     template=f"""
+        #     不妊治療について頑張って治療を受ける人に向けて温かい言葉をかけてください。
+        #     治療内容: {treatment}。
+        #     励ましや応援する優しい言葉をお願いします。
+        #     次に向かう感じや成功を目指すようなプレッシャーに感じるような言葉は避けて、
+        #     治療前の辛い気持ちに対して共感や寄り添い、支えになるようにお願いします。
+        #     大事な人に言うように、その人に思いやりを持った会話口調で、敬語でお願いします。
+        #     """
+        # )
+
+        # # プロンプトテンプレートに治療内容を埋め込んで LLM に送信し、メッセージを生成
+        # response = llm(prompt_template.format(treatment=treatment))
+
+        # # 生成されたメッセージを JSON 形式で返す
+        # return JsonResponse({'message': response})
+        
+        # Userのroleに基づいてプロンプトテンプレートを分岐
+        if user.role == 'user':
+        # プロンプトテンプレートを定義    
+            prompt_template = PromptTemplate(
+                input_variables=["treatment"],
+                template=f"""
+                不妊治療について頑張って治療を受ける人に向けて
+                200文字以内の温かい言葉をかけてください。
+                治療内容: {treatment}。
+                励ましや応援する優しい言葉をお願いします。
+                次に向かう感じや成功を目指すようなプレッシャーに感じるような言葉は避けて、
+                治療前の辛い気持ちに対して共感や寄り添い、支えになるようにお願いします。
+                大事な人に言うように、その人に思いやりを持った会話口調で、
+                敬語で簡潔に表現してください。
+                """
+            )
+        else:  # user.role == 'partner'
+            prompt_template = PromptTemplate(
+                input_variables=["treatment"],
+                template=f"""
+                不妊治療を受ける人のパートナーに向けて
+                200文字以内で配慮した方がいい言葉をかけてください。
+                治療内容: {treatment}。
+                具体的にどういった言葉や態度、行動をとるべきかアドバイスをお願いいたします。
+                相手のことは「パートナー」という表現にしてください。
+                治療前の辛い気持ちに対して共感や寄り添い、支えになるようにお願いします。
+                その人に思いやりを持った会話口調で、
+                敬語で表現してください。
+                """
+            )
 
         # プロンプトテンプレートに治療内容を埋め込んで LLM に送信し、メッセージを生成
         response = llm(prompt_template.format(treatment=treatment))
 
         # 生成されたメッセージを JSON 形式で返す
-        return JsonResponse({'message': response})
+        return JsonResponse({'message': response[:200]}) # 最初の200文字まで使用
     
     # listを取得時、firebase tokenを確認し、そのユーザーの情報を取得する
     def list(self, request):

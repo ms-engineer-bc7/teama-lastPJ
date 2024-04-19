@@ -18,6 +18,7 @@ import {
   EventClickArg,
 } from "@fullcalendar/common"; // EventClickArgをこちらに移動
 import ModalPartner from "../_components/ModalPartner";
+import MessageBanner from "../_components/MessageBannar"; // MessageBannerコンポーネントのパス
 import { getFetchData } from "../fetch";
 import { EventInfo } from "../types";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -28,6 +29,10 @@ export default function Partner() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventInfo | null>(null);
   const [authUser] = useAuthState(auth);
+  const [modalEventTitle, setModalEventTitle] = useState("");
+  const [startDateTime, setStartDateTime] = useState("");
+  const [endDateTime, setEndDateTime] = useState("");
+  const [selectedEventId, setSelectedEventId] = useState("");
 
   // GET の処理
   useEffect(() => {
@@ -55,6 +60,22 @@ export default function Partner() {
     });
     setIsModalOpen(true);
   };
+
+  // const handleEventClick = (clickInfo: any) => {
+  //   const event = clickInfo.event;
+  //   // ログ
+  //   console.log("予定クリック時:イベント", event);
+  //   console.log("予定クリック時:イベントタイトル", event.title);
+  //   console.log("予定クリック時:開始日", event.startStr);
+  //   console.log("予定クリック時:終了日", event.endStr);
+  //   console.log("予定クリック時:取得したID", event.id);
+
+  //   setSelectedEventId(event.id);
+  //   setModalEventTitle(event.title);
+  //   setStartDateTime(event.startStr);
+  //   setEndDateTime(event.endStr);
+  //   setIsModalOpen(true);
+  // };
 
   return (
     <>
@@ -84,6 +105,7 @@ export default function Partner() {
           event={selectedEvent}
         />
       )}
+      {selectedEventId && <MessageBanner id={selectedEventId} />}
     </>
   );
 }
