@@ -51,31 +51,29 @@ export default function Login() {
     }
   };
   return (
-    <div className="flex min-h-screen">
-      <div className="w-1/2 flex justify-center items-center min-h-screen">
-        <img src="/img/login.svg" alt="toppage-image" />
+    <div className="flex min-h-screen w-full">
+      {/* 左側画像 */}
+      <div className="h-screen overflow-hidden flex-shrink-0">
+        <img src="/img/login.svg" alt="" className="" />
       </div>
 
-      {/* ボタンのdiv */}
-      <div className="w-1/2 flex flex-col justify-center items-center">
-        {/* 新規登録ボタン */}
+      {/* ボタン */}
+      <div className="flex flex-col justify-center items-center flex-grow">
+        {/* 新規登録・ログイン */}
         <button
-          className="mb-4 rounded-md bg-sky-500 px-6 py-3 text-sm font-semibold text-white hover:bg-sky-600"
+          style={{
+            marginBottom: "50px",
+            marginTop: "50px",
+            backgroundColor: "#8883a4",
+          }}
+          className="rounded-md px-6 py-3 text-sm font-semibold text-white hover:bg-green-400"
           onClick={signInWithGoogle}
         >
-          新規登録
+          Google で 新規登録 / ログイン
         </button>
 
-        {/* グーグルでログインボタン */}
-        <button
-          className="rounded-md bg-green-300 px-6 py-3 text-sm font-semibold text-white hover:bg-green-400"
-          onClick={signInWithGoogle}
-        >
-          グーグルでログイン
-        </button>
-
-        {/* トップページに戻るリンク */}
-        <p className="mt-5">
+        {/* トップページへ */}
+        <p>
           <Link href="/">トップページに戻る</Link>
         </p>
       </div>
