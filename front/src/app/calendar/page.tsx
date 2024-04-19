@@ -19,6 +19,7 @@ import {
 import { EventInfo } from "../types";
 import MessageBanner from "../_components/MessageBannar"; // MessageBannerコンポーネントのパス
 import { User } from "../../../@type";
+import Menu from "../_components/Menu";
 
 let eventGuid = 0;
 
@@ -204,39 +205,48 @@ export default function Calendar() {
 
   return (
     <>
-      <FullCalendar
-        plugins={[dayGridPlugin, interactionPlugin]}
-        initialView="dayGridMonth"
-        events={events}
-        selectable={true}
-        dayMaxEvents={true}
-        businessHours={{ daysOfWeek: [1, 2, 3, 4, 5] }}
-        dayCellContent={(e) => {
-          let dayNumber = parseInt(e.dayNumberText, 10);
-          return { html: dayNumber.toString() };
-        }}
-        locale="ja"
-        firstDay={1}
-        dateClick={handleDateClick}
-        eventClick={handleEventClick}
-        eventContent={renderEventContent}
-        contentHeight={700}
-      />
-      <Modal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        onConfirm={selectedEventId ? updateEvent : submitEvent}
-        submitEvent={submitEvent}
-        deleteEvent={deleteEvent}
-        updateEvent={updateEvent}
-        event={{
-          id: selectedEventId,
-          title: modalEventTitle,
-          start: startDateTime,
-          end: endDateTime,
-        }}
-      />
-      {selectedEventId && <MessageBanner id={selectedEventId} />}
+      <div className="flex w-full">
+        <div className="flex-shrink-0">
+          <Menu />
+        </div>
+
+        {/* カレンダー */}
+        <div className="flex-grow">
+          <FullCalendar
+            plugins={[dayGridPlugin, interactionPlugin]}
+            initialView="dayGridMonth"
+            events={events}
+            selectable={true}
+            dayMaxEvents={true}
+            businessHours={{ daysOfWeek: [1, 2, 3, 4, 5] }}
+            dayCellContent={(e) => {
+              let dayNumber = parseInt(e.dayNumberText, 10);
+              return { html: dayNumber.toString() };
+            }}
+            locale="ja"
+            firstDay={1}
+            dateClick={handleDateClick}
+            eventClick={handleEventClick}
+            eventContent={renderEventContent}
+            contentHeight={700}
+          />
+          <Modal
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            onConfirm={selectedEventId ? updateEvent : submitEvent}
+            submitEvent={submitEvent}
+            deleteEvent={deleteEvent}
+            updateEvent={updateEvent}
+            event={{
+              id: selectedEventId,
+              title: modalEventTitle,
+              start: startDateTime,
+              end: endDateTime,
+            }}
+          />
+          {selectedEventId && <MessageBanner id={selectedEventId} />}
+        </div>
+      </div>
     </>
   );
 }
