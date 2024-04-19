@@ -16,18 +16,8 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
   {
     name: "Calendar",
-    href: "/calendar",
+    href: "/partner",
     icon: <FontAwesomeIcon icon={faCalendar} style={{ fontSize: "21px" }} />,
-  },
-  {
-    name: "Price",
-    href: "/price",
-    icon: (
-      <FontAwesomeIcon
-        icon={faHandHoldingDollar}
-        style={{ fontSize: "21px" }}
-      />
-    ),
   },
   {
     name: "Counseling",
@@ -36,7 +26,7 @@ const menuItems: MenuItem[] = [
   },
 ];
 
-export default function Menu() {
+export default function PartnerMenu() {
   const [activeMenuItem, setActiveMenuItem] = useState<string | null>(null);
 
   const handleMenuItemClick = (href: string) => {
@@ -53,7 +43,7 @@ export default function Menu() {
         <Link href={"/dashboard"}>
           <div className="avatar mr-3">
             <Image
-              src="/img/profile.svg"
+              src="/img/profile_partner.svg"
               alt="Avatar"
               width={200}
               height={200}
