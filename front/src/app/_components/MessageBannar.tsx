@@ -47,24 +47,35 @@ export default function MessageBannar({ id }: { id: string }) {
         setIsLoading(false);
       }
     };
-
     fetchMessage(); //関数を呼び出し
   }, [id]); //idが変更された時にuseEffectを実行
 
+
+  const handleClose = () => {
+    // バナー非表示のアニメーションクラスを追加する
+    if (bannerRef.current) {
+      bannerRef.current.classList.add(styles.fadeDown);
+    }
+    // アニメーションが終わるのを待ってから状態を更新
+    const animationDuration = 1000; // ここでアニメーションの時間をミリ秒で指定します。
+    setTimeout(() => setShowBanner(false), animationDuration);
+  };
+  
   return (
     <div>
       {showBanner && (
         <div className={styles.notificationContainer}>
           <div
             id="notification-banner"
-            className={styles.notificationBanner}
+            className={`${styles.notificationBanner} ${styles.fadeup}`}
             ref={bannerRef}
           >
+            <button className={styles.closeButton} onClick={handleClose}>×</button>
             {message}
             <img
               src={IMAGE_URL}
               alt="Commenting Dog"
-              className={styles.commentImage}
+              className={`${styles.float}`}
             />
           </div>
         </div>
