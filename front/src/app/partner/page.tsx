@@ -1,14 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-// import FullCalendar from "@fullcalendar/react";
-// import dayGridPlugin from "@fullcalendar/daygrid";
-// import interactionPlugin, { EventClickArg } from "@fullcalendar/interaction";
-// import { EventInput } from "@fullcalendar/core";
-// import { EventContentArg } from "@fullcalendar/common";
-// import ModalPartner from "../_components/ModalPartner";
-// import { getFetchData } from "../fetch";
-// import { EventInfo } from "../types";
-
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -52,31 +43,13 @@ export default function Partner() {
   const handleEventClick = (clickInfo: EventClickArg) => {
     console.log("予定クリック時:イベント", clickInfo.event);
     setSelectedEvent({
-      event: {
-        id: Number(clickInfo.event.id),
-        title: clickInfo.event.title,
-        start: clickInfo.event.startStr,
-        end: clickInfo.event.endStr,
-      },
+      id: Number(clickInfo.event.id),
+      title: clickInfo.event.title,
+      start: clickInfo.event.startStr,
+      end: clickInfo.event.endStr,
     });
     setIsModalOpen(true);
   };
-
-  // const handleEventClick = (clickInfo: any) => {
-  //   const event = clickInfo.event;
-  //   // ログ
-  //   console.log("予定クリック時:イベント", event);
-  //   console.log("予定クリック時:イベントタイトル", event.title);
-  //   console.log("予定クリック時:開始日", event.startStr);
-  //   console.log("予定クリック時:終了日", event.endStr);
-  //   console.log("予定クリック時:取得したID", event.id);
-
-  //   setSelectedEventId(event.id);
-  //   setModalEventTitle(event.title);
-  //   setStartDateTime(event.startStr);
-  //   setEndDateTime(event.endStr);
-  //   setIsModalOpen(true);
-  // };
 
   return (
     <>
