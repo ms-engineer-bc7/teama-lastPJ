@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import styles from "./banner.module.css";
 
 type MessageBannerProps = {
+  id: string;
   messages: {
     alert_message_for_u: string;
     alert_message_for_p: string;
@@ -11,7 +12,7 @@ type MessageBannerProps = {
   role: 'user' | 'partner';
 };
 
-export default function MessageBannar({ messages, role }: MessageBannerProps) {
+export default function MessageBannar({ id, messages, role }: MessageBannerProps) {
   const pathname = usePathname(); // usePathnameフックを使用
   const [message, setMessage] = useState("");
   const [error, setError] = useState(null);
@@ -39,7 +40,7 @@ export default function MessageBannar({ messages, role }: MessageBannerProps) {
       setShowBanner(true); // バナーを表示
       setBannerStyle(styles.notificationBanner);
     }
-  }, [pathname]);
+  }, [id, role, messages]);
 
 
   const handleClose = () => {

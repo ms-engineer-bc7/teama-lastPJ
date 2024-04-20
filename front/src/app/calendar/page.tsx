@@ -255,7 +255,7 @@ export default function Calendar() {
           />
           {selectedEventId && (
           <MessageBanner
-          // id={selectedEventId} 
+          id={selectedEventId} 
           messages={selectedEventMessages}
           role={user.role}
           />

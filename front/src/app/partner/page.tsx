@@ -119,7 +119,7 @@ export default function Partner() {
           )}
           {selectedEventId && (
           <MessageBanner
-          // id={selectedEventId} 
+          id={selectedEventId} 
           messages={selectedEventMessages}
           role={user.role}
           />
