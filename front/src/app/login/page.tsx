@@ -53,29 +53,54 @@ export default function Login() {
   return (
     <div className="flex min-h-screen w-full">
       {/* 左側画像 */}
-      <div className="h-screen overflow-hidden flex-shrink-0">
-        <img src="/img/login.svg" alt="" className="" />
+      <div className="h-screen w-5/12 overflow-hidden flex-shrink-0">
+        {/* <div className="h-screen overflow-hidden flex-shrink-0"> */}
+        <img
+          src="/img/login.svg"
+          alt=""
+          className="w-full h-full object-cover"
+        />
       </div>
 
-      {/* ボタン */}
-      <div className="flex flex-col justify-center items-center flex-grow">
+      {/* アプリ紹介、ボタン */}
+      <div
+        style={{ paddingLeft: "150px", paddingRight: "150px" }}
+        className="flex flex-col justify-center items-center flex-grow px-15"
+      >
+        {/* アプリ紹介 */}
+        <p>
+          Sharecle（シェアクル）は、不妊治療のあゆみをサポートするアプリ。
+          <br />
+          パートナーや職場とのコミュニケーションをスムーズにするカレンダー機能により、治療スケジュールを一目で把握。
+          身体や心に寄り添ったメッセージで毎日を励まし、カップルでのカウンセリングを通じて、理解と共感を深めるサポートを提供します。
+          <br />
+          不妊治療の道のりを、もっと心強く支えられる体験へ。
+        </p>
+
+        {/* 横線 */}
+        <hr
+          style={{
+            width: "100%",
+            borderColor: "#d1d5db",
+            borderWidth: "1px",
+            marginTop: "50px",
+            marginBottom: "50px",
+          }}
+        />
+
         {/* 新規登録・ログイン */}
         <button
-          style={{
-            marginBottom: "50px",
-            marginTop: "50px",
-            backgroundColor: "#8883a4",
-          }}
-          className="rounded-md px-6 py-3 text-sm font-semibold text-white hover:bg-green-400"
+          style={{ backgroundColor: "#17274d" }}
+          className="rounded-full px-6 py-4 text-sm font-semibold text-white hover:bg-green-400"
           onClick={signInWithGoogle}
         >
-          Google で 新規登録 / ログイン
+          Google で 新規登録 &emsp; / &emsp; ログイン
         </button>
 
         {/* トップページへ */}
-        <p>
+        {/* <p>
           <Link href="/">トップページに戻る</Link>
-        </p>
+        </p> */}
       </div>
     </div>
   );
