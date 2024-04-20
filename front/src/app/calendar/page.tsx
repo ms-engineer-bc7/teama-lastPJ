@@ -16,18 +16,23 @@ import {
   putFetchData,
   getUserInfo,
 } from "../fetch";
-import { EventInfo } from "../types";
 import MessageBanner from "../_components/MessageBannar"; // MessageBannerコンポーネントのパス
 import { User } from "../../../@type";
 import Menu from "../_components/Menu";
 
 let eventGuid = 0;
 
+// カレンダーに足りないイベント情報を追加
+export type MyEventInput = {
+  alert_message_for_u: string;
+  alert_message_for_p: string;
+} & EventInput
+
 export default function Calendar() {
   const router = useRouter();
   const [authUser] = useAuthState(auth);
   const [user, setUser] = useState<User>();
-  const [events, setEvents] = useState<EventInput[]>([]);
+  const [events, setEvents] = useState<MyEventInput[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [eventTitle, setEventTitle] = useState("");
@@ -36,6 +41,12 @@ export default function Calendar() {
   const [endDateTime, setEndDateTime] = useState("");
   const [selectedTime, setSelectedTime] = useState("00:00");
   const [selectedEventId, setSelectedEventId] = useState("");
+
+  const fetchData = async () => {
+    const events = await getFetchData(authUser?.accessToken);
+    console.log("getした値(event)", events);
+    setEvents(events);
+  }
 
   // GET の処理
   useEffect(() => {
@@ -51,11 +62,6 @@ export default function Calendar() {
         router.push("/login");
       });
 
-    async function fetchData() {
-        const events = await getFetchData(authUser?.accessToken);
-        console.log("getした値(event)", events);
-        setEvents(events);
-    }
     fetchData();
   }, [authUser]);
 
@@ -118,15 +124,9 @@ export default function Calendar() {
         user!.id
       );
       if (!result.error) {
-        // POST処理が成功したら、カレンダーにイベントを追加する
-        // サーバーから返されたイベントIDを使用
-        const newEvents = [...events, { ...newEvent, id: (result as any).id }];
-        setEvents(newEvents);
-        // バックエンドにイベントIDを送信してメッセージを生成する
-        setSelectedEventId((result as any).id); // MessageBannerに表示するIDをセット
-
         setEventTitle("");
         setSelectedDate("");
+        await fetchData();
         setIsModalOpen(false);
       } else {
         console.error("データの送信でエラーが発生しました:", result.error);
@@ -141,16 +141,13 @@ export default function Calendar() {
     try {
       const numericId = parseInt(eventId);
       const result = await deleteFetchData(numericId);
+
       console.log("DELETEされたデータ:", result);
       if (result.success) {
-        // DELETE処理が成功したら、カレンダーからイベントを削除する
-        const updatedEvents = events.filter(
-          (event: any) => event.id !== numericId
-        );
-        setEvents(updatedEvents);
+        await fetchData();
         setIsModalOpen(false);
       } else if (result.error) {
-        console.error("イベント削除に失敗しました:", result.error);
+        //   console.error("イベント削除に失敗しました:", result.error);
       }
     } catch (error) {
       console.error("イベント削除中にエラーが発生しました:", error);
@@ -168,7 +165,7 @@ export default function Calendar() {
       title: title,
       start_date: startDate,
       end_date: endDate,
-      user: user!.uid,
+      user: user!.id,
     };
 
     console.log("PUTされたデータ:", updatedData);
@@ -182,7 +179,7 @@ export default function Calendar() {
           ? { ...event, title, start: startDate, end: endDate }
           : event
       );
-      setEvents(updatedEvents);
+      await fetchData();
       setIsModalOpen(false);
     } else {
       console.error("イベントの更新エラー:", result.error);

@@ -1,5 +1,5 @@
 import { EventInput } from "@fullcalendar/core";
-import Calendar from "./calendar/page";
+import Calendar, { MyEventInput } from "./calendar/page";
 import { User } from "../../@type";
 
 export const getUserInfo = async (authUser: any) => {
@@ -13,7 +13,7 @@ export const getUserInfo = async (authUser: any) => {
 
 
 // get
-export async function getFetchData(token: string): Promise<EventInput[]> {
+export async function getFetchData(token: string): Promise<MyEventInput[]> {
   try {
     const response = await fetch("/api/events", {
       method: "GET",
@@ -24,11 +24,13 @@ export async function getFetchData(token: string): Promise<EventInput[]> {
     });
     const data = await response.json();
 
-    const events: EventInput[] = data.map((e: any) => ({
+    const events: MyEventInput[] = data.map((e: any) => ({
       id: e.id,
       title: e.title,
       start: e.start_date,
       end: e.end_date,
+      alert_message_for_u: e.alert_message_for_u,
+      alert_message_for_p: e.alert_message_for_p,
     }));
 
     return events;

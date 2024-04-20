@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import styles from "./modal.module.css";
-import { ModalPartnerProps } from "../types";
+import { ModalPartnerProps } from "../../../@type";
 
 export default function ModalPartner({
   isOpen,
