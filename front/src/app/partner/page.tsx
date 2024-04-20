@@ -77,7 +77,7 @@ export default function Partner() {
         </div>
 
         {/* カレンダー */}
-        <div className={`flex-grow ${styles.fc_wrapper}`}>
+        <div className={`flex-grow fc-wrapper-partner ${styles.fc_wrapper}`}>
           <FullCalendar
             plugins={[dayGridPlugin, interactionPlugin]}
             initialView="dayGridMonth"

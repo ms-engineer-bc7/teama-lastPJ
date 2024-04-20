@@ -209,7 +209,7 @@ export default function Calendar() {
         </div>
 
         {/* カレンダー */}
-        <div className={`flex-grow ${styles.fc_wrapper}`}>
+        <div className={`flex-grow fc-wrapper-woman ${styles.fc_wrapper}`}>
           <FullCalendar
             plugins={[dayGridPlugin, interactionPlugin]}
             initialView="dayGridMonth"
