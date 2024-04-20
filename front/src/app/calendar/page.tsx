@@ -204,7 +204,7 @@ export default function Calendar() {
     <>
       <div className="flex w-full">
         <div className="flex-shrink-0">
-          <Menu />
+          <Menu user={user} />
         </div>
 
         {/* カレンダー */}
