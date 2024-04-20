@@ -49,7 +49,8 @@ class FirebaseClient():
                 'name': self.user.name,
                 'email': self.user.email,
                 'role': self.user.role,
-                'parter': self.user.partner,
+                'partner': self.user.partner.id if self.user.partner else None,
+                'partner_email': self.user.partner.email if self.user.partner else None,
             }, safe=False)
         except exceptions.FirebaseError as e:
             # トークンが無効の場合
