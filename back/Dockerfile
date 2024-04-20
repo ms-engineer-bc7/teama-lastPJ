@@ -9,6 +9,7 @@ WORKDIR /app
 
 # ホストマシンからコンテナの作業ディレクトリにrequirements.txtをコピー
 COPY requirements.txt /app/
+RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # 必要なファイルをコピー
