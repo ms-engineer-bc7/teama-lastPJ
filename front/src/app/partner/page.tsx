@@ -1,4 +1,5 @@
 "use client";
+import styles from './styles.module.css'
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import FullCalendar from "@fullcalendar/react";
@@ -11,18 +12,20 @@ import {
 } from "@fullcalendar/common"; // EventClickArgをこちらに移動
 import ModalPartner from "../_components/ModalPartner";
 import MessageBanner from "../_components/MessageBannar"; // MessageBannerコンポーネントのパス
-import { getFetchData, getUserInfo} from "../fetch";
-import { EventInfo } from "../types";
+import { getFetchData, getUserInfo } from "../fetch";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 import PartnerMenu from "../_components/PartnerMenu";
+
 import { MyEventInput } from "../calendar/page";
+import { User } from "../../../@type";
 
 export default function Partner() {
   const router = useRouter();
+  const [user, setUser] = useState<User>();
   const [events, setEvents] = useState<MyEventInput[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<EventInfo | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<MyEventInput | null>(null);
   const [authUser] = useAuthState(auth);
   const [modalEventTitle, setModalEventTitle] = useState("");
   const [startDateTime, setStartDateTime] = useState("");
@@ -32,31 +35,31 @@ export default function Partner() {
     alert_message_for_u: '',
     alert_message_for_p: '',
   });
-  const[user,setUser] = useState({role:''});// ユーザー情報とroleを状態で管理
+  // const[user,setUser] = useState({role:''});// ユーザー情報とroleを状態で管理
+
+
+  const fetchData = async () => {
+    const events = await getFetchData(authUser?.accessToken);
+    console.log("getした値(event)", events);
+    setEvents(events);
+  }
+
+
 
   // GET の処理
   useEffect(() => {
     if (!authUser) return;
     getUserInfo(authUser)
-      .then(async (response) => {
-        const userData = await response.json();
-        setUser(userData);
-        if (userData.role === "") {
-          router.push("/role");
-        }
+      .then(async (res) => {
+        const data = await res.json();
+        setUser(data);
+        if (data.role == "") router.push("/role");
+        if (data.role == "partner") router.push("/partner");
       })
-      .catch((error) => {
-        console.error("User data fetch error:", error);
+      .catch((err) => {
         router.push("/login");
       });
-
-    async function fetchData() {
-      console.log(authUser);
-      const events = await getFetchData(authUser.accessToken);
-      // const events = await getFetchData();
-      console.log("getした値(event)", events);
-      setEvents(events);
-    }
+      
     fetchData();
   }, [authUser,router]);
 
@@ -83,11 +86,11 @@ export default function Partner() {
     <>
       <div className="flex w-full">
         <div className="flex-shrink-0">
-          <PartnerMenu />
+          <PartnerMenu user={user} />
         </div>
 
         {/* カレンダー */}
-        <div className="flex-grow">
+        <div className={`flex-grow fc-wrapper-partner ${styles.fc_wrapper}`}>
           <FullCalendar
             plugins={[dayGridPlugin, interactionPlugin]}
             initialView="dayGridMonth"

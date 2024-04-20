@@ -28,16 +28,42 @@ html {
   width: 100%;
 }
 
-/* TODO カレンダーイベントの色を変える場所 */
+/* 
+  TODO カレンダーイベントの色を変える場所(全体) 
+  個別の変更の場合は、.fc-wrapper-woman .fc-wrapper-partnerをそれぞれ親につける。
+*/
+/* full calendar全体の背景色 */
+.fc {
+  background-color: #fff;
+  padding: 10px;
+}
+
+/* full calendarのtableヘッダーの色 */
+table.fc-scrollgrid thead {
+  background-color: #ccc;
+}
+
+.fc-wrapper-woman table.fc-scrollgrid thead {
+  background-color: #FFC9AB;
+}
+
+.fc-wrapper-partner table.fc-scrollgrid thead {
+  background-color: #ADCDD0;
+}
+
+
+/* full calendarのイベントの色 */
 .fc-event {
-  background-color: red !important;
+  background-color: #f56e25 !important;
   color: #fff !important;
+  padding-left: 10px;
 }
 
 .fc-h-event {
   border: none;
 }
 
+/* full calendarのマージン */
 .fc-media-screen {
   margin: 30px;
 }

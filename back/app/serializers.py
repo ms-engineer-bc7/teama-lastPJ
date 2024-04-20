@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import User, Event, SpreadSheet, Viewer
+from .models import User, Event, SpreadSheet
 
 class UserSerializer(serializers.ModelSerializer): #Userテーブル
     # partner_email = serializers.EmailField(source='partner.email', allow_null=True) #ユーザーのパートナーのメールアドレス
@@ -13,10 +13,6 @@ class EventSerializer(serializers.ModelSerializer): # Eventテーブル
         model = Event
         fields = '__all__'  
 
-class ViewerSerializer(serializers.ModelSerializer): # Viewerテーブル
-    class Meta:
-        model = Viewer
-        fields = '__all__'  
 
 class SpreadSheetSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:

@@ -1,9 +1,9 @@
-
+import json
 from django.shortcuts import render, get_object_or_404
 from django.http import Http404
 from django.http import HttpResponseNotAllowed
-from .models import User, Event, SpreadSheet, Viewer
-from .serializers import UserSerializer, EventSerializer, SpreadSheetSerializer,ViewerSerializer
+from .models import User, Event, SpreadSheet
+from .serializers import UserSerializer, EventSerializer, SpreadSheetSerializer
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -16,9 +16,6 @@ from .libs.firebase import FirebaseClient
 
 
 
-class ViewerViewSet(viewsets.ModelViewSet): #Viewerモデルに対するCRUD操作
-    queryset = Viewer.objects.all()
-    serializer_class = ViewerSerializer
 
 class UserViewSet(viewsets.ModelViewSet): #Userモデルに対するCRUD操作
     queryset = User.objects.all()
@@ -38,7 +35,6 @@ class UserViewSet(viewsets.ModelViewSet): #Userモデルに対するCRUD操作
             raise HttpResponseNotAllowed(
                 "Unauthorized firebase token."
             )
-        # return fbClient.get_user() #ログインしているユーザー情報取得
         return res
 
 class EventViewSet(viewsets.ModelViewSet): #ModelViewSetを継承。CRUD操作を行うための一連のビューが自動的に作成

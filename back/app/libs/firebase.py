@@ -48,14 +48,17 @@ class FirebaseClient():
                 'uid': uid,
                 'name': self.user.name,
                 'email': self.user.email,
-                'role': self.user.role
-            })
+                'role': self.user.role,
+                'partner': self.user.partner.id if self.user.partner else None,
+                'partner_email': self.user.partner.email if self.user.partner else None,
+            }, safe=False)
         except exceptions.FirebaseError as e:
             # トークンが無効の場合
             return JsonResponse({'error': str(e)}, status=401)
         except User.DoesNotExist:
             # ユーザーが見つからない場合
             return JsonResponse({'error': 'User not found'}, status=404)
+        
     def get_user(self):
         return self.user
     

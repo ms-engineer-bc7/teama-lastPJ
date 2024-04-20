@@ -8,7 +8,6 @@ export const getUserInfo = async (authUser: any) => {
       'Authorization': `Bearer ${authUser.accessToken}`
     }
   })
-
 }
 
 

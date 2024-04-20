@@ -6,7 +6,7 @@ class User(models.Model):
     name = models.CharField(max_length=255, default='')
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=7, choices=[('user', '女性'), ('partner', 'パートナー')], blank=True)
-    partner = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='linked_partner')
+    partner = models.OneToOneField('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='linked_partner')
     #Userモデルを参照する自己参照の外部キー パートナーがリンクを通じて登録するとこのフィールドにリンク
 
     def __str__(self):
@@ -27,12 +27,6 @@ class Event(models.Model):
     def __str__(self):
         return f"{self.title} - {self.start_date.strftime('%Y-%m-%d')}"
     
-class Viewer(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    allowed_email = models.EmailField(blank=True, null=True)  # 最初は空でもOK
-    
-    def __str__(self):
-        return self.allowed_email or "No email set"   
 
 class Cost(models.Model):
     treatment_type = models.CharField(max_length=100)
