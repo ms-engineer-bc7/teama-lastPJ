@@ -1,4 +1,5 @@
 "use client";
+import styles from './styles.module.css'
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import FullCalendar from "@fullcalendar/react";
@@ -208,7 +209,7 @@ export default function Calendar() {
         </div>
 
         {/* カレンダー */}
-        <div className="flex-grow">
+        <div className={`flex-grow ${styles.fc_wrapper}`}>
           <FullCalendar
             plugins={[dayGridPlugin, interactionPlugin]}
             initialView="dayGridMonth"
