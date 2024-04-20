@@ -1,12 +1,12 @@
 /* バナーと画像のコンテナスタイル */
 .notificationContainer {
   position: fixed;
-  bottom: 1.5rem; /* 画面の下からの余白 */
+  bottom: 0.5rem; /* 画面の下からの余白 */
   right: 2rem; /* 画面の右からの余白 */
   z-index: 50; /* 他の要素の上に表示するためのz-index */
 }
 
-/* 通知バナー */
+/* 通知バナー　フキダシ */
 .notificationBanner {
   position: relative; /* 子要素の絶対位置指定の基準に */
   display: inline-block; /* バナーの内容に基づいてサイズを変更する */
@@ -14,7 +14,7 @@
   right: 7rem; /* 画面の右からの余白 */
   max-width: 520px; /* バナーの最大幅 */
   padding: 1.25rem; /* 内側の余白 */
-  background-color: #007bff; /* バナーの背景色 */
+  background-color: #007bff; /* デフォルト　バナーの背景色 */
   color: white; /* テキストの色 */
   text-align: left; /* テキストを左寄せに変更 */
   line-height: 1.5; /* 行間を広げる */
@@ -22,7 +22,7 @@
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2); /* ぼかし */
   border-radius: 0.75rem; /* 角の丸み */
   z-index: 50; /* 他の要素の上に表示するためのz-index */
-  visibility: hidden; /* 初期状態ではバナーは見えない　　　　　ついか */
+  visibility: hidden; /* 初期状態ではバナーは見えない */
 }
 
 /* バナーのフキダシしっぽ */
@@ -40,6 +40,22 @@
   transform-origin: 100% 100%; /* 回転の基点を右下に */
   z-index: 49; /* バナーの前に表示 */
 }
+
+
+/* ユーザー用のフキダシ */
+.userBanner,
+.userBanner::after  {
+  background-color: #4caf50; /* 緑色の背景 */
+  box-shadow: 4px 4px 0 -3px #4caf50 inset; /* しっぽの影の位置と大きさを調整 */
+}
+
+/* パートナー用のフキダシ */
+.partnerBanner,
+.partnerBanner::after {
+  background-color: #ff9900; /* オレンジ色の背景 */
+  box-shadow: 4px 4px 0 -3px #ff9900 inset; /* しっぽの影の位置と大きさを調整 */
+}
+
 
 /* バナーの表示・非表示アニメーション */
 .fadeup {
