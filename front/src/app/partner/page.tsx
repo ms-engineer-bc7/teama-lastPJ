@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -10,7 +11,7 @@ import {
 } from "@fullcalendar/common"; // EventClickArgをこちらに移動
 import ModalPartner from "../_components/ModalPartner";
 import MessageBanner from "../_components/MessageBannar"; // MessageBannerコンポーネントのパス
-import { getFetchData } from "../fetch";
+import { getFetchData, getUserInfo} from "../fetch";
 import { EventInfo } from "../types";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
@@ -18,6 +19,7 @@ import PartnerMenu from "../_components/PartnerMenu";
 import { MyEventInput } from "../calendar/page";
 
 export default function Partner() {
+  const router = useRouter();
   const [events, setEvents] = useState<MyEventInput[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventInfo | null>(null);
@@ -26,10 +28,28 @@ export default function Partner() {
   const [startDateTime, setStartDateTime] = useState("");
   const [endDateTime, setEndDateTime] = useState("");
   const [selectedEventId, setSelectedEventId] = useState("");
+  const [selectedEventMessages, setSelectedEventMessages] = useState({
+    alert_message_for_u: '',
+    alert_message_for_p: '',
+  });
+  const[user,setUser] = useState({role:''});// ユーザー情報とroleを状態で管理
 
   // GET の処理
   useEffect(() => {
     if (!authUser) return;
+    getUserInfo(authUser)
+      .then(async (response) => {
+        const userData = await response.json();
+        setUser(userData);
+        if (userData.role === "") {
+          router.push("/role");
+        }
+      })
+      .catch((error) => {
+        console.error("User data fetch error:", error);
+        router.push("/login");
+      });
+
     async function fetchData() {
       console.log(authUser);
       const events = await getFetchData(authUser.accessToken);
@@ -38,7 +58,7 @@ export default function Partner() {
       setEvents(events);
     }
     fetchData();
-  }, [authUser]);
+  }, [authUser,router]);
 
   // ユーザーが予定をクリックしたらモーダルが開き、詳細が見れる
   const handleEventClick = (clickInfo: EventClickArg) => {
@@ -52,6 +72,11 @@ export default function Partner() {
     setSelectedEventId(clickInfo.event.id);  // メッセージ生成のためIDをセット
     console.log("送信されたID", clickInfo.event.id);
     setIsModalOpen(true);
+    // イベント情報から必要なメッセージを取得して状態を更新
+    setSelectedEventMessages({
+      alert_message_for_u: clickInfo.event.extendedProps.alert_message_for_u,
+      alert_message_for_p: clickInfo.event.extendedProps.alert_message_for_p,
+    });
   };
 
   return (
@@ -89,7 +114,13 @@ export default function Partner() {
               event={selectedEvent}
             />
           )}
-          {selectedEventId && <MessageBanner id={selectedEventId} />}
+          {selectedEventId && (
+          <MessageBanner
+          // id={selectedEventId} 
+          messages={selectedEventMessages}
+          role={user.role}
+          />
+          )}
         </div>
       </div>
     </>
