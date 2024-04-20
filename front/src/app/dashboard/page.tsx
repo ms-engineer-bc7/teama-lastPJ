@@ -80,11 +80,6 @@ export default function Dashboard() {
       setErrorMessage('入力項目は必須です。')
       return
     }
-    console.log(formType)
-    console.log(name)
-    console.log(partnerEmail)
-    console.log(sharedEmail)
-
     // submit処理
     try {
       if (formType == 'name') {
@@ -106,7 +101,7 @@ export default function Dashboard() {
   const updateUser = async () => {
     const newUser = user!
     newUser.name = name
-    fetch(`/api/users/${user?.id}`, {
+    fetch(`/api/users/${user?.uid}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -126,7 +121,7 @@ export default function Dashboard() {
   }
 
   const updatePartnerEmail = async () => {
-    fetch(`/api/users/${user?.id}/partner`, {
+    fetch(`/api/users/${user?.uid}/partner`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -271,13 +266,13 @@ export default function Dashboard() {
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">{LABELS[formType]}</label>
             {formType == 'name' &&
-              <input type='text' className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-10 w-72' value={name} onChange={(e) => setName(e.target.value)} />
+              <input type='text' className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-10 w-72' value={name} onChange={(e) => setName(e.target.value)} placeholder="しぇあくる" />
             }
             {formType == 'partner' &&
-              <input type='email' className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-10 w-72' value={partnerEmail} onChange={(e) => setPartnerEmail(e.target.value)} />
+              <input type='email' className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-10 w-96' value={partnerEmail} onChange={(e) => setPartnerEmail(e.target.value)} placeholder="partner@sharecle.com" />
             }
             {formType == 'spreadsheet' &&
-              <input type='email' className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-10 w-72' value={sharedEmail} onChange={(e) => setSharedEmail(e.target.value)} />
+              <input type='email' className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-10 w-96' value={sharedEmail} onChange={(e) => setSharedEmail(e.target.value)} placeholder="company@sharecle.com" />
             }
 
           </div>
