@@ -10,6 +10,7 @@ import { EventContentArg } from "@fullcalendar/common";
 import { auth } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Modal from "../_components/Modal";
+import { LoadingSpinner } from '../_components/LoadingSpinner';
 import {
   getFetchData,
   postFetchData,
@@ -35,6 +36,7 @@ export default function Calendar() {
   const [user, setUser] = useState<User>();
   const [events, setEvents] = useState<MyEventInput[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [eventTitle, setEventTitle] = useState("");
   const [modalEventTitle, setModalEventTitle] = useState("");
@@ -43,27 +45,32 @@ export default function Calendar() {
   const [selectedTime, setSelectedTime] = useState("00:00");
   const [selectedEventId, setSelectedEventId] = useState("");
 
-  const fetchData = async () => {
-    const events = await getFetchData(authUser?.accessToken);
-    console.log("getした値(event)", events);
-    setEvents(events);
-  }
 
-  // GET の処理
-  useEffect(() => {
-    if (!authUser) return;
+
+  const fetchData = async () => {
     getUserInfo(authUser)
       .then(async (res) => {
         const data = await res.json();
         setUser(data);
         if (data.role == "") router.push("/role");
         if (data.role == "partner") router.push("/partner");
+        const events = await getFetchData(authUser?.accessToken);
+        console.log("getした値(event)", events);
+        setEvents(events);
+        setIsLoading(false)
       })
       .catch((err) => {
         router.push("/login");
       });
 
-    fetchData();
+  }
+
+  // GET の処理
+  useEffect(() => {
+    setIsLoading(true)
+    if (!authUser) return;
+    fetchData()
+
   }, [authUser]);
 
   // ユーザーが予定をクリックしたらモーダルが開き、詳細が見れる
@@ -106,6 +113,7 @@ export default function Calendar() {
     startDate: string,
     endDate: string
   ) => {
+    setIsLoading(true)
     const newEvent = {
       title: eventTitle,
       start: startDate,
@@ -127,7 +135,7 @@ export default function Calendar() {
       if (!result.error) {
         setEventTitle("");
         setSelectedDate("");
-        await fetchData();
+        fetchData();
         setIsModalOpen(false);
       } else {
         console.error("データの送信でエラーが発生しました:", result.error);
@@ -162,6 +170,7 @@ export default function Calendar() {
     startDate: string,
     endDate: string
   ) => {
+    setIsLoading(true)
     const updatedData = {
       title: title,
       start_date: startDate,
@@ -244,6 +253,7 @@ export default function Calendar() {
           />
           {selectedEventId && <MessageBanner id={selectedEventId} />}
         </div>
+        {isLoading && <LoadingSpinner />}
       </div>
     </>
   );

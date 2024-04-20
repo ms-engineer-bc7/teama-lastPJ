@@ -16,6 +16,8 @@ import { getFetchData, getUserInfo } from "../fetch";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 import PartnerMenu from "../_components/PartnerMenu";
+import { LoadingSpinner } from '../_components/LoadingSpinner';
+
 
 import { MyEventInput } from "../calendar/page";
 import { User } from "../../../@type";
@@ -23,6 +25,7 @@ import { User } from "../../../@type";
 export default function Partner() {
   const router = useRouter();
   const [user, setUser] = useState<User>();
+  const [isLoading, setIsLoading] = useState(false);
   const [events, setEvents] = useState<MyEventInput[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<MyEventInput | null>(null);
@@ -33,26 +36,30 @@ export default function Partner() {
   const [selectedEventId, setSelectedEventId] = useState("");
 
 
-  const fetchData = async () => {
-    const events = await getFetchData(authUser?.accessToken);
-    console.log("getした値(event)", events);
-    setEvents(events);
-  }
 
-  // GET の処理
-  useEffect(() => {
-    if (!authUser) return;
+  const fetchData = async () => {
     getUserInfo(authUser)
       .then(async (res) => {
         const data = await res.json();
         setUser(data);
         if (data.role == "") router.push("/role");
-        if (data.role == "partner") router.push("/partner");
+        if (data.role == "user") router.push("/calendar");
+        const events = await getFetchData(authUser?.accessToken);
+        console.log("getした値(event)", events);
+        setEvents(events);
+        setIsLoading(false)
       })
       .catch((err) => {
         router.push("/login");
       });
-    fetchData();
+
+  }
+  // GET の処理
+  useEffect(() => {
+    setIsLoading(true)
+    if (!authUser) return;
+    fetchData()
+
   }, [authUser]);
 
   // ユーザーが予定をクリックしたらモーダルが開き、詳細が見れる
@@ -106,6 +113,7 @@ export default function Partner() {
           )}
           {selectedEventId && <MessageBanner id={selectedEventId} />}
         </div>
+        {isLoading && <LoadingSpinner />}
       </div>
     </>
   );
