@@ -6,7 +6,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendar } from "@fortawesome/free-regular-svg-icons";
 import { faHandHoldingDollar } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
+import { User } from "../../../@type";
 
+type MenuProps = {
+  user?: User
+}
 interface MenuItem {
   name: string;
   href: string;
@@ -26,7 +30,7 @@ const menuItems: MenuItem[] = [
   },
 ];
 
-export default function PartnerMenu() {
+export default function PartnerMenu(props: MenuProps) {
   const [activeMenuItem, setActiveMenuItem] = useState<string | null>(null);
 
   const handleMenuItemClick = (href: string) => {
@@ -52,8 +56,8 @@ export default function PartnerMenu() {
           </div>
         </Link>
         <div className="flex flex-col items-center">
-          <h3 className="text-lg font-bold mt-3 text-white">ユーザー名</h3>
-          <p className="text-sm mt-2 text-white">ロール</p>
+          <h3 className="text-lg font-bold mt-3 text-white">{props.user?.name}</h3>
+          <p className="text-sm mt-2 text-white">{props.user?.role == 'user' ? '女性' : 'パートナー'}</p>
         </div>
       </div>
 
@@ -63,11 +67,10 @@ export default function PartnerMenu() {
           {menuItems.map((item, index) => (
             <Link href={item.href} key={index} legacyBehavior>
               <a
-                className={`menu-item flex items-center p-3 px-9 rounded transition-colors duration-200 ease-in-out mt-4 mb-7 ${
-                  activeMenuItem === item.href
-                    ? "bg-[#83B99C] text-white hover:bg-[#83B99C]"
-                    : "hover:bg-[#83B99C] hover:text-white hover:shadow-md"
-                }`}
+                className={`menu-item flex items-center p-3 px-9 rounded transition-colors duration-200 ease-in-out mt-4 mb-7 ${activeMenuItem === item.href
+                  ? "bg-[#83B99C] text-white hover:bg-[#83B99C]"
+                  : "hover:bg-[#83B99C] hover:text-white hover:shadow-md"
+                  }`}
                 onMouseEnter={(e) => {
                   if (activeMenuItem !== item.href) {
                     e.currentTarget.style.backgroundColor = "#83B99C";
