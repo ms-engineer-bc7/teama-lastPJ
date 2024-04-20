@@ -24,6 +24,7 @@ export default function ModalPartner({
   return ReactDOM.createPortal(
     <div
       className="fixed inset-0 bg-black bg-opacity-50 z-40 flex justify-center items-center"
+      style={{ zIndex: 100 }} // モーダルの背景をバナーより上に設定
       onClick={onClose}
     >
       <div

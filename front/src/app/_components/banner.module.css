@@ -1,12 +1,12 @@
 /* バナーと画像のコンテナスタイル */
 .notificationContainer {
   position: fixed;
-  bottom: 3rem; /* 画面の下からの余白 */
+  bottom: 0.5rem; /* 画面の下からの余白 */
   right: 2rem; /* 画面の右からの余白 */
   z-index: 50; /* 他の要素の上に表示するためのz-index */
 }
 
-/* 通知バナー */
+/* 通知バナー　フキダシ */
 .notificationBanner {
   position: relative; /* 子要素の絶対位置指定の基準に */
   display: inline-block; /* バナーの内容に基づいてサイズを変更する */
@@ -14,7 +14,7 @@
   right: 7rem; /* 画面の右からの余白 */
   max-width: 520px; /* バナーの最大幅 */
   padding: 1.25rem; /* 内側の余白 */
-  background-color: #007bff; /* バナーの背景色 */
+  background-color: #007bff; /* デフォルト　バナーの背景色 */
   color: white; /* テキストの色 */
   text-align: left; /* テキストを左寄せに変更 */
   line-height: 1.5; /* 行間を広げる */
@@ -22,6 +22,7 @@
   box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.2); /* ぼかし */
   border-radius: 0.75rem; /* 角の丸み */
   z-index: 50; /* 他の要素の上に表示するためのz-index */
+  visibility: hidden; /* 初期状態ではバナーは見えない */
 }
 
 /* バナーのフキダシしっぽ */
@@ -40,13 +41,80 @@
   z-index: 49; /* バナーの前に表示 */
 }
 
-/* フキダシを言っている画像 */
-.commentImage {
+
+/* ユーザー用のフキダシ */
+.userBanner,
+.userBanner::after  {
+  background-color: #4caf50; /* 緑色の背景 */
+  box-shadow: 4px 4px 0 -3px #4caf50 inset; /* しっぽの影の位置と大きさを調整 */
+}
+
+/* パートナー用のフキダシ */
+.partnerBanner,
+.partnerBanner::after {
+  background-color: #ff9900; /* オレンジ色の背景 */
+  box-shadow: 4px 4px 0 -3px #ff9900 inset; /* しっぽの影の位置と大きさを調整 */
+}
+
+
+/* バナーの表示・非表示アニメーション */
+.fadeup {
+  visibility: visible;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.fadeDown {
+  visibility: visible;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: visibility 0s 1s, opacity 1s, transform 1s; /* 非表示になるまでの遅延を設定 */
+}
+
+
+/* 閉じるボタンのスタイル */
+.closeButton {
   position: absolute;
-  width: 100px; /* 画像の幅を指定 */
-  height: 100px; /* 画像の高さを指定 */
-  bottom: -5px; /* フキダシの位置に合わせて調整 */
-  right: -1rem; /* バナーの右端からの位置を調整 */
-  transform: translateX(100%); /* バナーの右側に画像を配置 */
+  top: -10px;
+  right: -10px;
+  background-color: red;
+  color: white;
+  border: none;
+  cursor: pointer;
+  width: 30px; /* ボタンの幅 */
+  height: 30px; /* ボタンの高さ */
+  line-height: 20px; /* テキストをボタンの中央に配置 */
+  text-align: center; /* テキストを中央揃えに */
+  padding: 10px; /* パディングをリセット */
+  border-radius: 50%; /* ボタンを円形にする */
+  font-size: 20px; /* ×テキストのサイズを調整 */
+  font-weight: bold; /* ×テキストを太字に */
+  display: flex; /* Flexboxを使用 */
+  align-items: center; /* Flexboxで垂直方向の中央揃えに */
+  justify-content: center; /* Flexboxで水平方向の中央揃えに */
+}
+
+/* 画像の浮き上がりアニメーションに関するスタイル */
+.float {
+  animation: float 3s ease-in-out infinite alternate;
+  /* background: url('/img/dog.png') no-repeat center center / 60px auto; */
+  position: absolute;
+  width: 100px; /*画像の幅を指定*/
+  height: 100px; /*画像の高さを指定*/
+  bottom: -25px; /*フキダシの位置に合わせて調整 */
+  right: -7rem; /*バナーの右端からの位置を調整  */
+  transform: translateX(100%); /*バナーの右側に画像を配置*/
   z-index: 60; /* フキダシより前に表示 */
+}
+
+@keyframes float {
+  0% {
+    transform: translate(0, 0) rotate(-7deg);
+  }
+  50% {
+    transform: translate(0, -7px) rotate(0deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(7deg);
+  }
 }

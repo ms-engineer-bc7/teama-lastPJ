@@ -49,6 +49,8 @@ export default function Partner() {
       start: clickInfo.event.startStr,
       end: clickInfo.event.endStr,
     });
+    setSelectedEventId(clickInfo.event.id);  // メッセージ生成のためIDをセット
+    console.log("送信されたID", clickInfo.event.id);
     setIsModalOpen(true);
   };
 
@@ -87,6 +89,7 @@ export default function Partner() {
               event={selectedEvent}
             />
           )}
+          {selectedEventId && <MessageBanner id={selectedEventId} />}
         </div>
       </div>
     </>
