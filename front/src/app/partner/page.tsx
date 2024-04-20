@@ -15,9 +15,10 @@ import { EventInfo } from "../types";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 import PartnerMenu from "../_components/PartnerMenu";
+import { MyEventInput } from "../calendar/page";
 
 export default function Partner() {
-  const [events, setEvents] = useState<EventInput[]>([]);
+  const [events, setEvents] = useState<MyEventInput[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventInfo | null>(null);
   const [authUser] = useAuthState(auth);

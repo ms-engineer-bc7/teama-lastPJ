@@ -16,18 +16,23 @@ import {
   putFetchData,
   getUserInfo,
 } from "../fetch";
-import { EventInfo } from "../types";
 import MessageBanner from "../_components/MessageBannar"; // MessageBannerコンポーネントのパス
 import { User } from "../../../@type";
 import Menu from "../_components/Menu";
 
 let eventGuid = 0;
 
+// カレンダーに足りないイベント情報を追加
+export type MyEventInput = {
+  alert_message_for_u: string;
+  alert_message_for_p: string;
+} & EventInput
+
 export default function Calendar() {
   const router = useRouter();
   const [authUser] = useAuthState(auth);
   const [user, setUser] = useState<User>();
-  const [events, setEvents] = useState<EventInput[]>([]);
+  const [events, setEvents] = useState<MyEventInput[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [eventTitle, setEventTitle] = useState("");
