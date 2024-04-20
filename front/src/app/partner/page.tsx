@@ -34,6 +34,11 @@ export default function Partner() {
   const [startDateTime, setStartDateTime] = useState("");
   const [endDateTime, setEndDateTime] = useState("");
   const [selectedEventId, setSelectedEventId] = useState("");
+  const [selectedEventMessages, setSelectedEventMessages] = useState({
+    alert_message_for_u: '',
+    alert_message_for_p: '',
+  });
+  // const[user,setUser] = useState({role:''});// ユーザー情報とroleを状態で管理
 
 
 
@@ -74,6 +79,11 @@ export default function Partner() {
     setSelectedEventId(clickInfo.event.id);  // メッセージ生成のためIDをセット
     console.log("送信されたID", clickInfo.event.id);
     setIsModalOpen(true);
+    // イベント情報から必要なメッセージを取得して状態を更新
+    setSelectedEventMessages({
+      alert_message_for_u: clickInfo.event.extendedProps.alert_message_for_u,
+      alert_message_for_p: clickInfo.event.extendedProps.alert_message_for_p,
+    });
   };
 
   return (
@@ -111,7 +121,13 @@ export default function Partner() {
               event={selectedEvent}
             />
           )}
-          {selectedEventId && <MessageBanner id={selectedEventId} />}
+          {selectedEventId && (
+            <MessageBanner
+              id={selectedEventId}
+              messages={selectedEventMessages}
+              role={user.role}
+            />
+          )}
         </div>
         {isLoading && <LoadingSpinner />}
       </div>
