@@ -83,32 +83,49 @@ export default function Role() {
   return (
     <>
       <div className="flex flex-col items-center justify-center min-h-screen">
-        <div>
-          <h2 className="text-center mb-6">タイプを選択してください</h2>
+        <div className="flex flex-col items-center space-y-6">
+          <h1 className="text-center mb-6">タイプを選択してください</h1>
           {user && user?.role == "" && (
-            <div className="flex flex-col space-y-6">
+            <div
+              style={{ marginTop: "15px" }}
+              className="flex flex-col space-y-8"
+            >
+              {/* 女性用ボタン */}
               <button
-                className="for-woman border-2 border-black hover:border-orange-500 rounded-lg p-4 transition-colors duration-300"
+                style={{ backgroundColor: "#FFC9AB" }}
+                className="for-woman rounded-lg p-5 pl-4 transition-colors mt-2.5 flex"
                 onClick={handleWomanClick}
               >
-                <p className="font-bold mb-2">女性</p>
-                <p>
-                  治療の記録や治療金額の見積もり、カウンセリングなどを利用できます。
-                  <br />
-                  また、治療に向けたメッセージも受け取ることができます。
-                </p>
+                <div style={{ width: "140px" }} className="mr-6">
+                  <img src="/img/role-w.svg" alt="" className="w-full" />
+                </div>
+                <div className="text-left">
+                  <h2 className="font-bold mb-2">女性</h2>
+                  <p>
+                    治療のスケジュール管理や治療金額の見積もり、カウンセリングを利用できます。
+                    <br />
+                    また、治療に向けたメッセージも受け取ることができます。
+                  </p>
+                </div>
               </button>
 
+              {/* パートナー用ボタン */}
               <button
-                className="for-partner border-2 border-black hover:border-orange-500 rounded-lg p-4 transition-colors duration-300 mt-2.5"
+                style={{ backgroundColor: "#ADCDD0" }}
+                className="for-partner rounded-lg p-5 pl-4 transition-colors mt-2.5 flex"
                 onClick={handlePartnerClick}
               >
-                <p className="font-bold mb-2">パートナー</p>
-                <p>
-                  女性版で入力されたスケジュールを閲覧できます。
-                  <br />
-                  また、治療のサポートに向けたメッセージを受け取ることができます。
-                </p>
+                <div style={{ width: "140px" }} className="mr-6">
+                  <img src="/img/role-p.svg" alt="" className="w-full" />
+                </div>
+                <div className="text-left">
+                  <h2 className="font-bold mb-2">パートナー</h2>
+                  <p>
+                    女性版で入力されたスケジュールの閲覧と、カウンセリングの利用ができます。
+                    <br />
+                    また、治療のサポートに向けたメッセージを受け取ることができます。
+                  </p>
+                </div>
               </button>
             </div>
           )}
