@@ -45,6 +45,7 @@ export default function Dashboard() {
   const handleOpenNameModal = () => {
     setFormType('name')
     setName(user?.name ?? '')
+    setPartnerEmail(user?.partner_email ?? '')
     setErrorMessage('')
     setIsModalOpen(true)
   }
@@ -222,13 +223,13 @@ export default function Dashboard() {
           <label className="block text-gray-700 font-bold mb-2">{LABELS.partner}</label>
           <div className="flex w-full">
             <p className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-10 w-96">
-              {user?.partner?.email}
+              {user?.partner_email}
             </p>
             <button
-              className={(user?.partner?.email ? "bg-gray-500 hover:bg-gray-600" : 'bg-blue-500 hover:bg-blue-600') + " text-white font-bold py-2 px-4 rounded mr-2 w-24 mx-3"}
+              className={(user?.partner_email ? "bg-gray-500 hover:bg-gray-600" : 'bg-blue-500 hover:bg-blue-600') + " text-white font-bold py-2 px-4 rounded mr-2 w-24 mx-3"}
               onClick={handleOpenPartnerModal}
             >
-              {user?.partner?.email ? '変更' : '追加'}
+              {user?.partner_email ? '変更' : '追加'}
             </button>
           </div>
         </div>

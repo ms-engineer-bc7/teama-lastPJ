@@ -6,6 +6,7 @@ export interface User {
   role: string;
   accessToken?: string;
   partner?: User;
+  partner_email?: string;
 }
 
 export interface Event {
