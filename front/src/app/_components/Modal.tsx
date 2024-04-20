@@ -14,6 +14,7 @@ export default function Modal({
   updateEvent,
   event,
 }: any) {
+
   const [modalEventTitle, setModalEventTitle] = useState("");
   const [startDateTime, setStartDateTime] = useState("");
   const [endDateTime, setEndDateTime] = useState("");
@@ -119,45 +120,49 @@ export default function Modal({
           className="border rounded px-3 py-2 mb-4 w-full"
         />
 
-        <div className="flex justify-end">
-          <button
-            onClick={async () => {
-              await submitEvent(modalEventTitle, startDateTime, endDateTime);
-            }}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mr-2"
-          >
-            保存
-          </button>
+        <div className="flex justify-between">
+          {!event.title ?
+            <button
+              onClick={async () => {
+                await submitEvent(modalEventTitle, startDateTime, endDateTime);
+              }}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mr-2"
+            >
+              保存
+            </button> :
+            <div>
 
-          <button
-            onClick={async () => {
-              if (event.id) {
-                await updateEvent(
-                  event.id,
-                  modalEventTitle,
-                  startDateTime,
-                  endDateTime
-                );
-                onClose();
-              }
-            }}
-            className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded mr-2"
-          >
-            変更
-          </button>
+              <button
+                onClick={async () => {
+                  if (event.id) {
+                    await updateEvent(
+                      event.id,
+                      modalEventTitle,
+                      startDateTime,
+                      endDateTime
+                    );
+                    onClose();
+                  }
+                }}
+                className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded mr-2"
+              >
+                変更
+              </button>
 
-          <button
-            onClick={() => {
-              console.log("モーダルから渡されるイベントID:", event.id);
-              deleteEvent(event.id.toString());
-            }}
-            // onClick={async () => {
-            //   await deleteEvent(event.id); // 削除処理関数を実行
-            // }}
-            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2"
-          >
-            削除
-          </button>
+              <button
+                onClick={() => {
+                  console.log("モーダルから渡されるイベントID:", event.id);
+                  deleteEvent(event.id.toString());
+                }}
+                // onClick={async () => {
+                //   await deleteEvent(event.id); // 削除処理関数を実行
+                // }}
+                className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded mr-2"
+              >
+                削除
+              </button>
+            </div>
+          }
 
           <button
             onClick={handleClose}

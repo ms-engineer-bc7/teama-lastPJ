@@ -37,6 +37,12 @@ export default function Calendar() {
   const [selectedTime, setSelectedTime] = useState("00:00");
   const [selectedEventId, setSelectedEventId] = useState("");
 
+  const fetchData = async () => {
+    const events = await getFetchData(authUser?.accessToken);
+    console.log("getした値(event)", events);
+    setEvents(events);
+  }
+
   // GET の処理
   useEffect(() => {
     if (!authUser) return;
@@ -51,11 +57,6 @@ export default function Calendar() {
         router.push("/login");
       });
 
-    async function fetchData() {
-        const events = await getFetchData(authUser?.accessToken);
-        console.log("getした値(event)", events);
-        setEvents(events);
-    }
     fetchData();
   }, [authUser]);
 
@@ -118,15 +119,9 @@ export default function Calendar() {
         user!.id
       );
       if (!result.error) {
-        // POST処理が成功したら、カレンダーにイベントを追加する
-        // サーバーから返されたイベントIDを使用
-        const newEvents = [...events, { ...newEvent, id: (result as any).id }];
-        setEvents(newEvents);
-        // バックエンドにイベントIDを送信してメッセージを生成する
-        setSelectedEventId((result as any).id); // MessageBannerに表示するIDをセット
-
         setEventTitle("");
         setSelectedDate("");
+        await fetchData();
         setIsModalOpen(false);
       } else {
         console.error("データの送信でエラーが発生しました:", result.error);
@@ -141,16 +136,13 @@ export default function Calendar() {
     try {
       const numericId = parseInt(eventId);
       const result = await deleteFetchData(numericId);
+
       console.log("DELETEされたデータ:", result);
       if (result.success) {
-        // DELETE処理が成功したら、カレンダーからイベントを削除する
-        const updatedEvents = events.filter(
-          (event: any) => event.id !== numericId
-        );
-        setEvents(updatedEvents);
+        await fetchData();
         setIsModalOpen(false);
       } else if (result.error) {
-        console.error("イベント削除に失敗しました:", result.error);
+        //   console.error("イベント削除に失敗しました:", result.error);
       }
     } catch (error) {
       console.error("イベント削除中にエラーが発生しました:", error);
@@ -168,7 +160,7 @@ export default function Calendar() {
       title: title,
       start_date: startDate,
       end_date: endDate,
-      user: user!.uid,
+      user: user!.id,
     };
 
     console.log("PUTされたデータ:", updatedData);
@@ -182,7 +174,7 @@ export default function Calendar() {
           ? { ...event, title, start: startDate, end: endDate }
           : event
       );
-      setEvents(updatedEvents);
+      await fetchData();
       setIsModalOpen(false);
     } else {
       console.error("イベントの更新エラー:", result.error);
