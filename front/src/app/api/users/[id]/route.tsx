@@ -23,14 +23,7 @@ export async function PUT(req: Request, { params }: { params: Params }) {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-
-      "uid": "9uZtfzFPU8P9Cu7PvJd8pKpqkJC2",
-      "name": "test123000",
-      "email": "kazuya.sasaki39@gmail.com",
-      "role": "user"
-
-    }),
+    body: JSON.stringify(body),
   });
 }
 
