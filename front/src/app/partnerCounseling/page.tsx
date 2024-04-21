@@ -1,11 +1,11 @@
-import Menu from "../_components/Menu";
+import PartnerMenu from "../_components/PartnerMenu";
 
-export default function Counseling() {
+export default function PartnerCounseling() {
   return (
     <>
       <div className="flex w-full">
         <div className="flex-shrink-0 sticky top-0">
-          <Menu />
+          <PartnerMenu />
         </div>
 
         {/* カウンセリング */}
