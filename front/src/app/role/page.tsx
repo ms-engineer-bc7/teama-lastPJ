@@ -3,13 +3,15 @@ import { useRouter } from "next/navigation";
 import { auth } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useState, useEffect } from "react";
-
 import { User } from "../../../@type";
+import { LoadingSpinner } from '../_components/LoadingSpinner';
+
 
 export default function Role() {
   const router = useRouter();
   const [authUser] = useAuthState(auth);
   const [user, setUser] = useState<User>();
+  const [isLoading, setIsLoading] = useState(false);
 
   const getUserInfo = async () => {
     if (!authUser) {
@@ -23,12 +25,12 @@ export default function Role() {
       .then(async (res) => {
         const data = await res.json();
         setUser(data);
-        if (data.role == "") return;
         if (data.role == "user") {
           router.push("/calendar");
         } else if (data.role == "partner") {
           router.push("/partner");
         }
+        setIsLoading(false)
       })
       .catch((err) => {
         router.push("/login");
@@ -36,11 +38,13 @@ export default function Role() {
   };
 
   useEffect(() => {
+    setIsLoading(true)
     if (!authUser) return;
     getUserInfo();
   }, [authUser]);
 
   const handleWomanClick = () => {
+    setIsLoading(true)
     fetch(`/api/users/${user?.uid}`, {
       method: "PUT",
       headers: {
@@ -53,7 +57,12 @@ export default function Role() {
       }),
     })
       .then((res) => {
-        router.push("/calendar");
+        if (res.status == 200) {
+          router.push("/calendar");
+          return
+        }
+        setIsLoading(false)
+        alert("サーバーエラーです。もう一度やり直してください。");
       })
       .catch((err) => {
         alert("サーバーエラーです。もう一度やり直してください。");
@@ -61,6 +70,7 @@ export default function Role() {
   };
 
   const handlePartnerClick = () => {
+    setIsLoading(true)
     fetch(`/api/users/${user?.uid}`, {
       method: "PUT",
       headers: {
@@ -73,7 +83,12 @@ export default function Role() {
       }),
     })
       .then((res) => {
-        router.push("/partner");
+        if (res.status == 200) {
+          router.push("/partner");
+          return
+        }
+        setIsLoading(false)
+        alert("サーバーエラーです。もう一度やり直してください。");
       })
       .catch((err) => {
         alert("サーバーエラーです。もう一度やり直してください。");
@@ -84,8 +99,8 @@ export default function Role() {
     <>
       <div className="flex flex-col items-center justify-center min-h-screen">
         <div className="flex flex-col items-center space-y-6">
-          <h1 className="text-center mb-6">タイプを選択してください</h1>
-          {user && user?.role == "" && (
+          {user && user?.role == "" && (<>
+            <h1 className="text-center mb-6">タイプを選択してください</h1>
             <div
               style={{ marginTop: "15px" }}
               className="flex flex-col space-y-8"
@@ -128,8 +143,10 @@ export default function Role() {
                 </div>
               </button>
             </div>
+          </>
           )}
         </div>
+        {isLoading && <LoadingSpinner />}
       </div>
     </>
   );

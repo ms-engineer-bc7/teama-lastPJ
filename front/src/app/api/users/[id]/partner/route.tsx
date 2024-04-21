@@ -38,7 +38,9 @@ export async function PUT(req: Request, { params }: { params: Params }) {
   // 更新処理
   return await fetch(`${DJANGO_USER_API_URL}${id}/`, {
     method: "PUT",
-    headers: req.headers,
+    headers: {
+      "Content-Type": "application/json",
+    },
     body: JSON.stringify(reqBody),
   });
 

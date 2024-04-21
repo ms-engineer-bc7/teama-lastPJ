@@ -10,6 +10,7 @@ import { EventContentArg } from "@fullcalendar/common";
 import { auth } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Modal from "../_components/Modal";
+import { LoadingSpinner } from '../_components/LoadingSpinner';
 import {
   getFetchData,
   postFetchData,
@@ -35,6 +36,7 @@ export default function Calendar() {
   const [user, setUser] = useState<User>();
   const [events, setEvents] = useState<MyEventInput[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState("");
   const [eventTitle, setEventTitle] = useState("");
   const [modalEventTitle, setModalEventTitle] = useState("");
@@ -48,26 +50,29 @@ export default function Calendar() {
   });
 
   const fetchData = async () => {
-    const events = await getFetchData(authUser?.accessToken);
-    console.log("getした値(event)", events);
-    setEvents(events);
-  }
-
-  // GET の処理
-  useEffect(() => {
-    if (!authUser) return;
     getUserInfo(authUser)
       .then(async (res) => {
         const data = await res.json();
         setUser(data);
         if (data.role == "") router.push("/role");
         if (data.role == "partner") router.push("/partner");
+        const events = await getFetchData(authUser?.accessToken);
+        console.log("getした値(event)", events);
+        setEvents(events);
+        setIsLoading(false)
       })
       .catch((err) => {
         router.push("/login");
       });
 
-    fetchData();
+  }
+
+  // GET の処理
+  useEffect(() => {
+    setIsLoading(true)
+    if (!authUser) return;
+    fetchData()
+
   }, [authUser]);
 
   // ユーザーが予定をクリックしたらモーダルが開き、詳細が見れる
@@ -81,7 +86,7 @@ export default function Calendar() {
     console.log("予定クリック時:取得したID", event.id);
     console.log("予定クリック時:取得したメッセージu", event.extendedProps.alert_message_for_u);
     console.log("予定クリック時:取得したメッセージp", event.extendedProps.alert_message_for_p);
-    
+
     setSelectedEventId(event.id);
     setModalEventTitle(event.title);
     setStartDateTime(event.startStr);
@@ -89,9 +94,9 @@ export default function Calendar() {
     setIsModalOpen(true);
     // イベント情報から必要なメッセージを取得して状態を更新
     setSelectedEventMessages({
-    alert_message_for_u: clickInfo.event.extendedProps.alert_message_for_u,
-    alert_message_for_p: clickInfo.event.extendedProps.alert_message_for_p,
-  });
+      alert_message_for_u: clickInfo.event.extendedProps.alert_message_for_u,
+      alert_message_for_p: clickInfo.event.extendedProps.alert_message_for_p,
+    });
   };
 
   // カレンダーの日付(マス)をクリックしたときの処理
@@ -117,6 +122,7 @@ export default function Calendar() {
     startDate: string,
     endDate: string
   ) => {
+    setIsLoading(true)
     const newEvent = {
       title: eventTitle,
       start: startDate,
@@ -136,9 +142,7 @@ export default function Calendar() {
         user!.id
       );
       if (!result.error) {
-        setEventTitle("");
-        setSelectedDate("");
-        await fetchData();
+        fetchData();
         setIsModalOpen(false);
       } else {
         console.error("データの送信でエラーが発生しました:", result.error);
@@ -173,6 +177,7 @@ export default function Calendar() {
     startDate: string,
     endDate: string
   ) => {
+    setIsLoading(true)
     const updatedData = {
       title: title,
       start_date: startDate,
@@ -254,13 +259,14 @@ export default function Calendar() {
             }}
           />
           {selectedEventId && (
-          <MessageBanner
-          id={selectedEventId} 
-          messages={selectedEventMessages}
-          role={user.role}
-          />
+            <MessageBanner
+              id={selectedEventId}
+              messages={selectedEventMessages}
+              role={user.role}
+            />
           )}
         </div>
+        {isLoading && <LoadingSpinner />}
       </div>
     </>
   );

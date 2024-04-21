@@ -7,12 +7,16 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import {
   getUserInfo,
 } from "../fetch";
+import { LoadingSpinner } from '../_components/LoadingSpinner';
 import { User } from "../../../@type";
 import Menu from "../_components/Menu";
 import Link from "next/link";
 
 // Modalのスタイルを定義
 const customStyles = {
+  overlay: {
+    zIndex: 100
+  },
   content: {
     top: '50%',
     left: '50%',
@@ -22,12 +26,15 @@ const customStyles = {
     transform: 'translate(-50%, -50%)',
     maxWidth: '90%', // 最大幅を設定
     maxHeight: '90vh', // 最大高さを設定
+    width: '550px',
+    height: '300px'
   },
 };
 
 export default function Dashboard() {
   const router = useRouter();
   const [authUser] = useAuthState(auth);
+  const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<User>()
   const [sheetId, setSheetId] = useState<string>('');
   const [name, setName] = useState<string>('');
@@ -42,6 +49,42 @@ export default function Dashboard() {
     'spreadsheet': 'スプレッドシート連携メールアドレス',
   }
 
+  useEffect(() => {
+    setIsLoading(true)
+    if (!authUser) return;
+    getUserInfo(authUser)
+      .then(async (res) => {
+        const data = await res.json();
+        console.log(data)
+        setUser(data);
+        setName(data.name)
+        setPartnerEmail(data.partner_email)
+        if (data.role == "") router.push("/role");
+        if (data.role == "partner") router.push("/partner");
+        setIsLoading(false)
+      })
+      .catch((err) => {
+        router.push("/login");
+      });
+    fetch(`/api/spreadsheets/`, {
+      headers: {
+        'Authorization': `Bearer ${authUser.accessToken}`
+      }
+    })
+      .then(async res => {
+        const data = await res.json();
+        console.log(data)
+        if (data.length != 0) {
+          setSheetId(data[0].sheet_id)
+          setSharedEmail(data[0].shared_email)
+        }
+        setIsLoading(false)
+      })
+      .catch(err => {
+        router.push('/login')
+      })
+  }, [authUser]);
+
   const handleOpenNameModal = () => {
     setFormType('name')
     setName(user?.name ?? '')
@@ -51,7 +94,7 @@ export default function Dashboard() {
   }
   const handleOpenPartnerModal = () => {
     setFormType('partner')
-    setPartnerEmail(user?.partner?.email ?? '')
+    setPartnerEmail(user?.partner_email ?? '')
     setErrorMessage('')
     setIsModalOpen(true)
   }
@@ -67,7 +110,7 @@ export default function Dashboard() {
     setIsModalOpen(false)
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     // validation
     if (formType == 'name' && name == '') {
       setErrorMessage('入力項目は必須です。')
@@ -81,27 +124,27 @@ export default function Dashboard() {
       setErrorMessage('入力項目は必須です。')
       return
     }
+    setIsLoading(true)
     // submit処理
-    try {
-      if (formType == 'name') {
-        await updateUser()
-      }
-      if (formType == 'partner') {
-        await updatePartnerEmail()
-      }
-      if (formType == 'spreadsheet') {
-        await createSpredSheet()
-      }
-      setIsModalOpen(false)
-    } catch (err) {
-      console.log(err)
+    if (formType == 'name') {
+      updateUser()
+    }
+    if (formType == 'partner') {
+      updatePartnerEmail()
+    }
+    if (formType == 'spreadsheet') {
+      createSpredSheet()
     }
   }
 
 
   const updateUser = async () => {
-    const newUser = user!
-    newUser.name = name
+    const newUser = {
+      uid: user?.uid,
+      name: name,
+      email: user?.email,
+      role: user?.role,
+    }
     fetch(`/api/users/${user?.uid}`, {
       method: "PUT",
       headers: {
@@ -111,13 +154,18 @@ export default function Dashboard() {
 
     })
       .then(async res => {
-        console.log(res)
-        const data = await res.json();
-        getUserInfo(authUser?.accessToken)
+        if (res.status != 200) {
+          setErrorMessage("ユーザー情報の更新に失敗しました。")
+          setIsLoading(false)
+          return
+        }
+        setUser({ ...user!, name: name })
+        setIsLoading(false)
+        setIsModalOpen(false)
       })
       .catch(err => {
         setErrorMessage("ユーザー情報の更新に失敗しました。")
-        throw new Error()
+        setIsLoading(false)
       })
   }
 
@@ -128,17 +176,26 @@ export default function Dashboard() {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ 'user': user, 'partner_email': partnerEmail }),
-
     })
       .then(async res => {
         console.log(res)
-        const data = await res.json();
-        getUserInfo(authUser?.accessToken)
+        if (res.status == 404) {
+          setErrorMessage("一致するパートナーはおりません。")
+          setIsLoading(false)
+          return
+        }
+        if (res.status != 200) {
+          setErrorMessage("パートナーメールの登録に失敗しました。")
+          setIsLoading(false)
+          return
+        }
+        setUser({ ...user!, partner_email: partnerEmail })
+        setIsLoading(false)
+        setIsModalOpen(false)
       })
       .catch(err => {
         setErrorMessage("パートナーメールの登録に失敗しました。")
-        throw new Error()
-
+        setIsLoading(false)
       })
   }
 
@@ -159,45 +216,14 @@ export default function Dashboard() {
         const data = await res.json();
         setSheetId(data.sheet_id)
         setSharedEmail(data.shared_email)
+        setIsLoading(false)
+        setIsModalOpen(false)
       })
       .catch(err => {
         setErrorMessage("spreadsheetの生成に失敗しました。")
-        throw new Error()
-
+        setIsLoading(false)
       })
   }
-
-  useEffect(() => {
-    if (!authUser) return;
-    getUserInfo(authUser)
-      .then(async (res) => {
-        const data = await res.json();
-        console.log(data)
-        setUser(data);
-        setName(data.name)
-        setPartnerEmail(data.partner?.email)
-        if (data.role == "") router.push("/role");
-        if (data.role == "partner") router.push("/partner");
-      })
-      .catch((err) => {
-        // router.push("/login");
-      });
-    fetch(`/api/spreadsheets/`, {
-      headers: {
-        'Authorization': `Bearer ${authUser.accessToken}`
-      }
-    })
-      .then(async res => {
-        const data = await res.json();
-        console.log(data)
-        setSheetId(data[0].sheet_id)
-        setSharedEmail(data[0].shared_email)
-      })
-      .catch(err => {
-        // router.push('/login')
-      })
-  }, [authUser]);
-
 
   return (
     <div className="flex w-full">
@@ -263,7 +289,7 @@ export default function Dashboard() {
         onRequestClose={handleCloseModal}
         style={customStyles}
       >
-        <div className='p-10'>
+        <div className='p-8'>
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">{LABELS[formType]}</label>
             {formType == 'name' &&
@@ -304,6 +330,7 @@ export default function Dashboard() {
 
         </div>
       </Modal>
+      {isLoading && <LoadingSpinner />}
     </div >
 
   );

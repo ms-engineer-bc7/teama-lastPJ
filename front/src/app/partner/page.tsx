@@ -16,6 +16,8 @@ import { getFetchData, getUserInfo } from "../fetch";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../firebase";
 import PartnerMenu from "../_components/PartnerMenu";
+import { LoadingSpinner } from '../_components/LoadingSpinner';
+
 
 import { MyEventInput } from "../calendar/page";
 import { User } from "../../../@type";
@@ -23,6 +25,7 @@ import { User } from "../../../@type";
 export default function Partner() {
   const router = useRouter();
   const [user, setUser] = useState<User>();
+  const [isLoading, setIsLoading] = useState(false);
   const [events, setEvents] = useState<MyEventInput[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<MyEventInput | null>(null);
@@ -38,30 +41,31 @@ export default function Partner() {
   // const[user,setUser] = useState({role:''});// ユーザー情報とroleを状態で管理
 
 
+
   const fetchData = async () => {
-    const events = await getFetchData(authUser?.accessToken);
-    console.log("getした値(event)", events);
-    setEvents(events);
-  }
-
-
-
-  // GET の処理
-  useEffect(() => {
-    if (!authUser) return;
     getUserInfo(authUser)
       .then(async (res) => {
         const data = await res.json();
         setUser(data);
         if (data.role == "") router.push("/role");
-        if (data.role == "partner") router.push("/partner");
+        if (data.role == "user") router.push("/calendar");
+        const events = await getFetchData(authUser?.accessToken);
+        console.log("getした値(event)", events);
+        setEvents(events);
+        setIsLoading(false)
       })
       .catch((err) => {
         router.push("/login");
       });
-      
-    fetchData();
-  }, [authUser,router]);
+
+  }
+  // GET の処理
+  useEffect(() => {
+    setIsLoading(true)
+    if (!authUser) return;
+    fetchData()
+
+  }, [authUser]);
 
   // ユーザーが予定をクリックしたらモーダルが開き、詳細が見れる
   const handleEventClick = (clickInfo: EventClickArg) => {
@@ -118,13 +122,14 @@ export default function Partner() {
             />
           )}
           {selectedEventId && (
-          <MessageBanner
-          id={selectedEventId} 
-          messages={selectedEventMessages}
-          role={user.role}
-          />
+            <MessageBanner
+              id={selectedEventId}
+              messages={selectedEventMessages}
+              role={user.role}
+            />
           )}
         </div>
+        {isLoading && <LoadingSpinner />}
       </div>
     </>
   );
