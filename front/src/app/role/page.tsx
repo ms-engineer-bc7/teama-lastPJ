@@ -44,6 +44,7 @@ export default function Role() {
   }, [authUser]);
 
   const handleWomanClick = () => {
+    setIsLoading(true)
     fetch(`/api/users/${user?.uid}`, {
       method: "PUT",
       headers: {
@@ -56,7 +57,12 @@ export default function Role() {
       }),
     })
       .then((res) => {
-        router.push("/calendar");
+        if (res.status == 200) {
+          router.push("/calendar");
+          return
+        }
+        setIsLoading(false)
+        alert("サーバーエラーです。もう一度やり直してください。");
       })
       .catch((err) => {
         alert("サーバーエラーです。もう一度やり直してください。");
@@ -64,6 +70,7 @@ export default function Role() {
   };
 
   const handlePartnerClick = () => {
+    setIsLoading(true)
     fetch(`/api/users/${user?.uid}`, {
       method: "PUT",
       headers: {
@@ -76,7 +83,12 @@ export default function Role() {
       }),
     })
       .then((res) => {
-        router.push("/partner");
+        if (res.status == 200) {
+          router.push("/partner");
+          return
+        }
+        setIsLoading(false)
+        alert("サーバーエラーです。もう一度やり直してください。");
       })
       .catch((err) => {
         alert("サーバーエラーです。もう一度やり直してください。");

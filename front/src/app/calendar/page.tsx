@@ -49,8 +49,6 @@ export default function Calendar() {
     alert_message_for_p: '',
   });
 
-
-
   const fetchData = async () => {
     getUserInfo(authUser)
       .then(async (res) => {
@@ -88,7 +86,7 @@ export default function Calendar() {
     console.log("予定クリック時:取得したID", event.id);
     console.log("予定クリック時:取得したメッセージu", event.extendedProps.alert_message_for_u);
     console.log("予定クリック時:取得したメッセージp", event.extendedProps.alert_message_for_p);
-    
+
     setSelectedEventId(event.id);
     setModalEventTitle(event.title);
     setStartDateTime(event.startStr);
@@ -96,9 +94,9 @@ export default function Calendar() {
     setIsModalOpen(true);
     // イベント情報から必要なメッセージを取得して状態を更新
     setSelectedEventMessages({
-    alert_message_for_u: clickInfo.event.extendedProps.alert_message_for_u,
-    alert_message_for_p: clickInfo.event.extendedProps.alert_message_for_p,
-  });
+      alert_message_for_u: clickInfo.event.extendedProps.alert_message_for_u,
+      alert_message_for_p: clickInfo.event.extendedProps.alert_message_for_p,
+    });
   };
 
   // カレンダーの日付(マス)をクリックしたときの処理
@@ -144,8 +142,6 @@ export default function Calendar() {
         user!.id
       );
       if (!result.error) {
-        setEventTitle("");
-        setSelectedDate("");
         fetchData();
         setIsModalOpen(false);
       } else {
@@ -263,11 +259,11 @@ export default function Calendar() {
             }}
           />
           {selectedEventId && (
-          <MessageBanner
-          id={selectedEventId} 
-          messages={selectedEventMessages}
-          role={user.role}
-          />
+            <MessageBanner
+              id={selectedEventId}
+              messages={selectedEventMessages}
+              role={user.role}
+            />
           )}
         </div>
         {isLoading && <LoadingSpinner />}

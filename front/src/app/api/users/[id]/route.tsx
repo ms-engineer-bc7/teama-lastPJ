@@ -20,8 +20,17 @@ export async function PUT(req: Request, { params }: { params: Params }) {
   const body = await req.json();
   return await fetch(`${DJANGO_USER_API_URL}${id}/`, {
     method: "PUT",
-    headers: req.headers,
-    body: JSON.stringify(body),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+
+      "uid": "9uZtfzFPU8P9Cu7PvJd8pKpqkJC2",
+      "name": "test123000",
+      "email": "kazuya.sasaki39@gmail.com",
+      "role": "user"
+
+    }),
   });
 }
 

@@ -27,7 +27,7 @@ const customStyles = {
     maxWidth: '90%', // 最大幅を設定
     maxHeight: '90vh', // 最大高さを設定
     width: '550px',
-    height: '250px'
+    height: '300px'
   },
 };
 
@@ -58,7 +58,7 @@ export default function Dashboard() {
         console.log(data)
         setUser(data);
         setName(data.name)
-        setPartnerEmail(data.partner?.email)
+        setPartnerEmail(data.partner_email)
         if (data.role == "") router.push("/role");
         if (data.role == "partner") router.push("/partner");
         setIsLoading(false)
@@ -74,8 +74,10 @@ export default function Dashboard() {
       .then(async res => {
         const data = await res.json();
         console.log(data)
-        setSheetId(data[0].sheet_id)
-        setSharedEmail(data[0].shared_email)
+        if (data.length != 0) {
+          setSheetId(data[0].sheet_id)
+          setSharedEmail(data[0].shared_email)
+        }
         setIsLoading(false)
       })
       .catch(err => {
@@ -137,8 +139,12 @@ export default function Dashboard() {
 
 
   const updateUser = async () => {
-    const newUser = user!
-    newUser.name = name
+    const newUser = {
+      uid: user?.uid,
+      name: name,
+      email: user?.email,
+      role: user?.role,
+    }
     fetch(`/api/users/${user?.uid}`, {
       method: "PUT",
       headers: {
@@ -148,9 +154,12 @@ export default function Dashboard() {
 
     })
       .then(async res => {
-        console.log(res)
-        const data = await res.json();
-        getUserInfo(authUser?.accessToken)
+        if (res.status != 200) {
+          setErrorMessage("ユーザー情報の更新に失敗しました。")
+          setIsLoading(false)
+          return
+        }
+        setUser({ ...user!, name: name })
         setIsLoading(false)
         setIsModalOpen(false)
       })
@@ -170,8 +179,17 @@ export default function Dashboard() {
     })
       .then(async res => {
         console.log(res)
-        const data = await res.json();
-        getUserInfo(authUser?.accessToken)
+        if (res.status == 404) {
+          setErrorMessage("一致するパートナーはおりません。")
+          setIsLoading(false)
+          return
+        }
+        if (res.status != 200) {
+          setErrorMessage("パートナーメールの登録に失敗しました。")
+          setIsLoading(false)
+          return
+        }
+        setUser({ ...user!, partner_email: partnerEmail })
         setIsLoading(false)
         setIsModalOpen(false)
       })
@@ -271,7 +289,7 @@ export default function Dashboard() {
         onRequestClose={handleCloseModal}
         style={customStyles}
       >
-        <div className='p-10'>
+        <div className='p-8'>
           <div className="mb-4">
             <label className="block text-gray-700 font-bold mb-2">{LABELS[formType]}</label>
             {formType == 'name' &&

@@ -4,7 +4,6 @@ export interface User {
   name: string;
   email: string;
   role: string;
-  accessToken?: string;
   partner?: User;
   partner_email?: string;
 }
