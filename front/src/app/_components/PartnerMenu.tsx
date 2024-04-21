@@ -21,7 +21,7 @@ const menuItems: MenuItem[] = [
   },
   {
     name: "Counseling",
-    href: "/counseling",
+    href: "/partnerCounseling",
     icon: <FontAwesomeIcon icon={faHeart} style={{ fontSize: "21px" }} />,
   },
 ];
