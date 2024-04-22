@@ -1,8 +1,6 @@
 import Menu from "../_components/Menu";
 
 export default function Counseling() {
-  const stripeUrl = "https://buy.stripe.com/test_8wM6qu4v33Vf6Qw000";
-
   return (
     <>
       <div className="flex w-full">
@@ -17,7 +15,7 @@ export default function Counseling() {
               身体と心の両面から治療をサポート
             </p>
             <h1 className="text-3xl font-semibold text-center mb-9 text-gray-800">
-              カウンセリング
+              オンラインカウンセリング
             </h1>
 
             {/* 説明 */}
@@ -57,11 +55,10 @@ export default function Counseling() {
                 <div className="flex flex-col w-72">
                   <div className="flex flex-col p-6 bg-white rounded-lg border border-gray-300 shadow flex-grow">
                     <h2 className="font-extrabold mb-3 text-[#DD6E00]">
-                      価格について
+                      価格・営業時間について
                     </h2>
                     <p className="text-gray-600 flex-grow">
-                      初回無料。
-                      2回目以降は、1回5,000円です。1か月15,000円で何回でもご利用いただけるプランもご用意しております。
+                      1回5,000円です。朝9時から、夜22時まで予約できます。
                     </p>
                   </div>
                 </div>
@@ -145,13 +142,13 @@ export default function Counseling() {
                   </div>
                   <div>
                     <a
-                      href="stripeUrl"
+                      href="https://buy.stripe.com/test_6oE3dp9bf89a3vObII"
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       <button
                         type="button"
-                        className="py-2 px-4 bg-[#0E535F] text-white font-semibold rounded-lg shadow-md hover:bg-[#0B3B45]"
+                        className="py-2 px-4 bg-[#17274d] hover:bg-[#20317a] text-white font-semibold rounded-lg shadow-md"
                       >
                         予約 / お支払い
                       </button>
