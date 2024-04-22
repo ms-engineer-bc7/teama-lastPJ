@@ -29,13 +29,13 @@ export default function MessageBannar({ id, messages, role }: MessageBannerProps
       // ユーザー用メッセージ、不要な引用符を削除
       setMessage(messages.alert_message_for_u.replace(/「|」/g, "")); 
       setBannerStyle(`${styles.notificationBanner} ${styles.userBanner}`);
-      setImageURL("/img/dog.png"); // 画像URL
+      setImageURL("/img/wcat.png"); // 画像URL
     } else if (pathname === "/partner" && role === 'partner') { //パートナー用カレンダー
       setShowBanner(true); // バナーを表示
       // パートナー用メッセージ、不要な引用符を削除
       setMessage(messages.alert_message_for_p.replace(/「|」/g, "")); 
       setBannerStyle(`${styles.notificationBanner} ${styles.partnerBanner}`);
-      setImageURL("/img/lady.png"); // 画像URL
+      setImageURL("/img/mdog.png"); // 画像URL
     } else {
       setShowBanner(true); // バナーを表示
       setBannerStyle(styles.notificationBanner);
