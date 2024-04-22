@@ -1,5 +1,5 @@
 "use client";
-import styles from './styles.module.css'
+import styles from "./styles.module.css";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import FullCalendar from "@fullcalendar/react";
@@ -10,7 +10,7 @@ import { EventContentArg } from "@fullcalendar/common";
 import { auth } from "../firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import Modal from "../_components/Modal";
-import { LoadingSpinner } from '../_components/LoadingSpinner';
+import { LoadingSpinner } from "../_components/LoadingSpinner";
 import {
   getFetchData,
   postFetchData,
@@ -28,7 +28,7 @@ let eventGuid = 0;
 export type MyEventInput = {
   alert_message_for_u: string;
   alert_message_for_p: string;
-} & EventInput
+} & EventInput;
 
 export default function Calendar() {
   const router = useRouter();
@@ -45,8 +45,8 @@ export default function Calendar() {
   const [selectedTime, setSelectedTime] = useState("00:00");
   const [selectedEventId, setSelectedEventId] = useState("");
   const [selectedEventMessages, setSelectedEventMessages] = useState({
-    alert_message_for_u: '',
-    alert_message_for_p: '',
+    alert_message_for_u: "",
+    alert_message_for_p: "",
   });
 
   const fetchData = async () => {
@@ -59,20 +59,18 @@ export default function Calendar() {
         const events = await getFetchData(authUser?.accessToken);
         console.log("getした値(event)", events);
         setEvents(events);
-        setIsLoading(false)
+        setIsLoading(false);
       })
       .catch((err) => {
         router.push("/login");
       });
-
-  }
+  };
 
   // GET の処理
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
     if (!authUser) return;
-    fetchData()
-
+    fetchData();
   }, [authUser]);
 
   // ユーザーが予定をクリックしたらモーダルが開き、詳細が見れる
@@ -84,8 +82,14 @@ export default function Calendar() {
     console.log("予定クリック時:開始日", event.startStr);
     console.log("予定クリック時:終了日", event.endStr);
     console.log("予定クリック時:取得したID", event.id);
-    console.log("予定クリック時:取得したメッセージu", event.extendedProps.alert_message_for_u);
-    console.log("予定クリック時:取得したメッセージp", event.extendedProps.alert_message_for_p);
+    console.log(
+      "予定クリック時:取得したメッセージu",
+      event.extendedProps.alert_message_for_u
+    );
+    console.log(
+      "予定クリック時:取得したメッセージp",
+      event.extendedProps.alert_message_for_p
+    );
 
     setSelectedEventId(event.id);
     setModalEventTitle(event.title);
@@ -122,7 +126,7 @@ export default function Calendar() {
     startDate: string,
     endDate: string
   ) => {
-    setIsLoading(true)
+    setIsLoading(true);
     const newEvent = {
       title: eventTitle,
       start: startDate,
@@ -177,7 +181,7 @@ export default function Calendar() {
     startDate: string,
     endDate: string
   ) => {
-    setIsLoading(true)
+    setIsLoading(true);
     const updatedData = {
       title: title,
       start_date: startDate,
@@ -225,7 +229,9 @@ export default function Calendar() {
         </div>
 
         {/* カレンダー */}
-        <div className={`flex-grow fc-wrapper-woman ${styles.fc_wrapper}`}>
+        <div
+          className={`flex-grow fc-wrapper-woman bg-white ${styles.fc_wrapper}`}
+        >
           <FullCalendar
             plugins={[dayGridPlugin, interactionPlugin]}
             initialView="dayGridMonth"

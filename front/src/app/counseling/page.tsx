@@ -1,6 +1,8 @@
 import Menu from "../_components/Menu";
 
 export default function Counseling() {
+  const stripeUrl = "https://buy.stripe.com/test_8wM6qu4v33Vf6Qw000";
+
   return (
     <>
       <div className="flex w-full">
@@ -142,12 +144,18 @@ export default function Counseling() {
                     />
                   </div>
                   <div>
-                    <button
-                      type="submit"
-                      className="py-2 px-4 bg-[#0E535F] text-white font-semibold rounded-lg shadow-md hover:bg-[#0B3B45]"
+                    <a
+                      href="stripeUrl"
+                      target="_blank"
+                      rel="noopener noreferrer"
                     >
-                      予約する
-                    </button>
+                      <button
+                        type="button"
+                        className="py-2 px-4 bg-[#0E535F] text-white font-semibold rounded-lg shadow-md hover:bg-[#0B3B45]"
+                      >
+                        予約 / お支払い
+                      </button>
+                    </a>
                   </div>
                 </form>
               </div>

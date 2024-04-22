@@ -56,7 +56,7 @@ export default function Login() {
       <div className="h-screen w-5/12 overflow-hidden flex-shrink-0">
         {/* <div className="h-screen overflow-hidden flex-shrink-0"> */}
         <img
-          src="/img/login.svg"
+          src="/img/login.png"
           alt=""
           className="w-full h-full object-cover"
         />
