@@ -90,8 +90,7 @@ export default function Login() {
 
         {/* 新規登録・ログイン */}
         <button
-          style={{ backgroundColor: "#17274d" }}
-          className="rounded-full px-6 py-4 text-sm font-semibold text-white hover:bg-green-400"
+          className="bg-[#17274d] hover:bg-[#20317a] rounded-full px-6 py-4 text-sm font-semibold text-white"
           onClick={signInWithGoogle}
         >
           Google で 新規登録 &emsp; / &emsp; ログイン

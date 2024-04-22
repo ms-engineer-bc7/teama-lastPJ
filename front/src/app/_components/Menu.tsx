@@ -107,36 +107,24 @@ export default function Menu(props: MenuProps) {
 
       {/* メニュー */}
       <div className="flex flex-col items-center mt-6 text-white">
-        <nav className="menu p-3 rounded-lg w-full">
-          {menuItems.map((item, index) => (
-            <Link href={item.href} key={index} legacyBehavior>
+        <nav className="menu bg-[#EDCE7A] p-3 rounded-lg">
+          {menuItems.map((item, index) =>
+            // Logoutの項目だけ特別な処理を行う
+            item.name === "Logout" ? (
               <a
-                className={`menu-item flex items-center p-3 px-9 rounded-tr-lg rounded-br-lg transition-colors duration-200 ease-in-out mt-4 mb-7 hover:bg-white ${
+                key={index}
+                href={item.href}
+                className={`menu-item flex items-center p-3 px-9 rounded transition-colors duration-200 ease-in-out mt-4 mb-7 ${
                   activeMenuItem === item.href
-                    ? "hover:bg-white text-white"
+                    ? "bg-#FFFFFF text-white hover:bg-white"
                     : "hover:bg-white hover:text-black hover:shadow-md"
                 }`}
-                style={{
-                  // zIndexは親要素に対してrelativeが適用されていることを前提としています
-                  position: "relative",
-                  zIndex: 1,
+                onClick={(e) => {
+                  e.preventDefault(); // ページ遷移を防ぐ
+                  handleClick(item.href);
                 }}
-                onClick={() => handleClick(item.href)}
+                // onClick={() => handleClick(item.href)} // handleClickを呼び出す
               >
-                {/* 擬似要素と同じ機能をするspanタグを追加します */}
-                <span
-                  className="absolute inset-0 transition-all ease-in-out duration-200"
-                  style={{
-                    // zIndexを使って背景色のspanタグをコンテンツの下に配置します
-                    zIndex: -1,
-                    // メニュー項目のactive状態に応じて背景色を設定します
-                    backgroundColor:
-                      activeMenuItem === item.href ? "#FFFFFF" : "#EDCE7A",
-                    // ホバー時の背景色の変化はspanタグのクラスを変更することで対応します
-                    borderRadius: "0.5rem",
-                  }}
-                ></span>
-                {/* ここにアイコンとテキスト */}
                 <div
                   className="icon w-10 flex justify-center items-center"
                   style={{
@@ -147,8 +135,31 @@ export default function Menu(props: MenuProps) {
                 </div>
                 <span className="ml-3 text-lg font-medium">{item.name}</span>
               </a>
-            </Link>
-          ))}
+            ) : (
+              <Link href={item.href} key={index} legacyBehavior>
+                <a
+                  className={`menu-item flex items-center p-3 px-9 rounded transition-colors duration-200 ease-in-out mt-4 mb-7 ${
+                    activeMenuItem === item.href
+                      ? "bg-#FFFFFF text-white hover:bg-white"
+                      : "hover:bg-white hover:text-black hover:shadow-md"
+                  }`}
+                  onClick={() => handleClick(item.href)}
+                  // onMouseEnterとonMouseLeaveのイベントハンドラはそのままにする
+                >
+                  <div
+                    className="icon w-10 flex justify-center items-center"
+                    style={{
+                      color:
+                        activeMenuItem === item.href ? "#FFFFFF" : undefined,
+                    }}
+                  >
+                    {item.icon}
+                  </div>
+                  <span className="ml-3 text-lg font-medium">{item.name}</span>
+                </a>
+              </Link>
+            )
+          )}
         </nav>
       </div>
     </div>

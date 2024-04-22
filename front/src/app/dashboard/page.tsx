@@ -227,7 +227,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex w-full">
+    <div className="flex w-full h-screen">
       <div className="flex-shrink-0">
         <Menu user={user} />
       </div>
@@ -414,7 +414,7 @@ export default function Dashboard() {
 
           <div className="flex justify-between">
             <button
-              className="bg-[#666AF6] hover:bg-[#5559D6] text-white font-bold py-2 px-4 rounded mr-2 w-full"
+              className="bg-[#17274d] hover:bg-[#20317a] text-white font-bold py-2 px-4 rounded mr-2 w-full"
               onClick={handleSubmit}
             >
               保存
