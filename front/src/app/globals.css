@@ -35,7 +35,8 @@ html {
 /* full calendar全体の背景色 */
 .fc {
   background-color: #fff;
-  padding: 10px;
+  padding: 30px;
+  border-radius: 25px;
 }
 
 /* full calendarのtableヘッダーの色 */
@@ -44,17 +45,16 @@ table.fc-scrollgrid thead {
 }
 
 .fc-wrapper-woman table.fc-scrollgrid thead {
-  background-color: #FFC9AB;
+  background-color: #edce7a;
 }
 
 .fc-wrapper-partner table.fc-scrollgrid thead {
-  background-color: #ADCDD0;
+  background-color: #adcdd0;
 }
-
 
 /* full calendarのイベントの色 */
 .fc-event {
-  background-color: #f56e25 !important;
+  background-color: #ee7800 !important;
   color: #fff !important;
   padding-left: 10px;
 }
@@ -65,5 +65,6 @@ table.fc-scrollgrid thead {
 
 /* full calendarのマージン */
 .fc-media-screen {
-  margin: 30px;
+  margin: 15px;
+  margin-left: 0;
 }
