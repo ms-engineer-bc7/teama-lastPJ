@@ -5,9 +5,15 @@ const DJANGO_API_URL = "http://backend:8000/api/spreadsheets/";
 export async function GET(req: NextRequest) {
     try {
         console.log("Fetching events from Django API...");
+        // トークンを抽出
+        const accessToken = req.headers.get('Authorization')?.split('Bearer ')[1];
+
         const res = await fetch(DJANGO_API_URL, {
             method: "GET",
-            headers: req.headers,
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': `Bearer ${accessToken}`,
+            },
         });
 
         console.log(`Django API response status: ${res.status}`);
@@ -34,10 +40,16 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+    // トークンを抽出
+    const accessToken = req.headers.get('Authorization')?.split('Bearer ')[1];
+
     const data = await req.json();
     return await fetch(DJANGO_API_URL, {
         method: "POST",
-        headers: req.headers,
+        headers: {
+            "Content-Type": "application/json",
+            'Authorization': `Bearer ${accessToken}`,
+        },
         body: JSON.stringify(data),
     });
 }

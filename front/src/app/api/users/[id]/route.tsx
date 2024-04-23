@@ -8,9 +8,16 @@ interface Params {
 
 // 特定のIDのユーザーを取得
 export async function GET(req: Request, { params }: { params: Params }) {
+  // トークンを抽出
+  const accessToken = req.headers.get('Authorization')?.split('Bearer ')[1];
+
   const { id } = params;
   return await fetch(`${DJANGO_USER_API_URL}${id}/`, {
-    headers: req.headers
+    headers: {
+      "Content-Type": "application/json",
+      'Authorization': `Bearer ${accessToken}`,
+    },
+
   });
 }
 
@@ -32,7 +39,9 @@ export async function DELETE(req: Request, { params }: { params: Params }) {
   const { id } = params;
   const res = await fetch(`${DJANGO_USER_API_URL}${id}/`, {
     method: "DELETE",
-    headers: req.headers,
+    headers: {
+      "Content-Type": "application/json",
+    },
   });
 
   if (!res.ok) {

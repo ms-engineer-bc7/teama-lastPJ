@@ -7,16 +7,15 @@ export async function GET(req: NextRequest) {
   try {
     console.log("Fetching events from Django API...");
     // トークンを抽出
-    const accessToken = req.headers.get('Authorization')?.split('Bearer ')[1]; 
+    const accessToken = req.headers.get('Authorization')?.split('Bearer ')[1];
     console.log("Sending accessToken:", accessToken); // 送信するトークンのログ出力
 
     const res = await fetch(DJANGO_API_URL, {
       method: "GET",
       // headers: req.headers,
       headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${accessToken}`,
-        ...req.headers,
+        "Content-Type": "application/json",
+        'Authorization': `Bearer ${accessToken}`
       },
     });
 
