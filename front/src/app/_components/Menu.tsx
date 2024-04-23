@@ -91,7 +91,7 @@ export default function Menu(props: MenuProps) {
               alt="Avatar"
               width={200}
               height={200}
-              className="rounded-full"
+              className="rounded-full hover:opacity-80"
             />
           </div>
         </Link>
@@ -116,8 +116,8 @@ export default function Menu(props: MenuProps) {
                 href={item.href}
                 className={`menu-item flex items-center p-3 px-9 rounded transition-colors duration-200 ease-in-out mt-4 mb-7 ${
                   activeMenuItem === item.href
-                    ? "bg-#FFFFFF text-white hover:bg-white"
-                    : "hover:bg-white hover:text-black hover:shadow-md"
+                    ? "text-black bg-white hover:shadow-md" // クリックしたとき
+                    : "hover:bg-white hover:text-black hover:shadow-md" // ホバーしたとき
                 }`}
                 onClick={(e) => {
                   e.preventDefault(); // ページ遷移を防ぐ
@@ -128,7 +128,7 @@ export default function Menu(props: MenuProps) {
                 <div
                   className="icon w-10 flex justify-center items-center"
                   style={{
-                    color: activeMenuItem === item.href ? "#FFFFFF" : undefined,
+                    color: activeMenuItem === item.href ? "#000000" : undefined, // メニューがアクティブなとき
                   }}
                 >
                   {item.icon}
@@ -140,8 +140,8 @@ export default function Menu(props: MenuProps) {
                 <a
                   className={`menu-item flex items-center p-3 px-9 rounded transition-colors duration-200 ease-in-out mt-4 mb-7 ${
                     activeMenuItem === item.href
-                      ? "bg-#FFFFFF text-white hover:bg-white"
-                      : "hover:bg-white hover:text-black hover:shadow-md"
+                      ? "text-black bg-white hover:shadow-md" // クリックしたとき
+                      : "hover:bg-white hover:text-black hover:shadow-md" // ホバーしたとき
                   }`}
                   onClick={() => handleClick(item.href)}
                   // onMouseEnterとonMouseLeaveのイベントハンドラはそのままにする
@@ -150,7 +150,7 @@ export default function Menu(props: MenuProps) {
                     className="icon w-10 flex justify-center items-center"
                     style={{
                       color:
-                        activeMenuItem === item.href ? "#FFFFFF" : undefined,
+                        activeMenuItem === item.href ? "#000000" : undefined, // メニューがアクティブなとき
                     }}
                   >
                     {item.icon}

@@ -53,8 +53,15 @@ table.fc-scrollgrid thead {
 }
 
 /* full calendarのイベントの色 */
-.fc-event {
-  background-color: #ee7800 !important;
+.fc-wrapper-woman .fc-event {
+  background-color: #ee9b00 !important;
+  /* background-color: #ee7800 !important; */
+  color: #fff !important;
+  padding-left: 10px;
+}
+
+.fc-wrapper-partner .fc-event {
+  background-color: #007fee !important;
   color: #fff !important;
   padding-left: 10px;
 }
