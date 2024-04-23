@@ -58,7 +58,9 @@ export default function PartnerCounseling() {
                       価格・営業時間について
                     </h2>
                     <p className="text-gray-600 flex-grow">
-                      1回5,000円です。朝9時から、夜22時まで予約できます。
+                      1回5,000円です。
+                      <br />
+                      朝9時から、夜22時まで予約できます。
                     </p>
                   </div>
                 </div>
