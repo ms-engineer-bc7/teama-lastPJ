@@ -227,15 +227,15 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex w-full h-screen">
-      <div className="flex-shrink-0">
+    <div className="flex w-full h-full">
+      <div className="flex-shrink-0 h-full">
         <Menu user={user} />
       </div>
 
       {/* ダッシュボード */}
       <div className="w-full bg-gray-200 px-[100px] py-[50px]">
         <div className="flex items-center mb-4">
-          <FontAwesomeIcon icon={faGear} size="lg" className="text-[#666AF6]" />
+          <FontAwesomeIcon icon={faGear} size="lg" className="text-[#20317a]" />
           <h1 className="font-bold text-2xl ml-2">設定</h1>
         </div>
 
@@ -335,7 +335,7 @@ export default function Dashboard() {
                   >
                     <button
                       type="button"
-                      className="bg-green-600 hover:bg-green-900 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-48 mx-3"
+                      className="bg-[#17274d] hover:bg-[#20317a] text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-48 mx-3"
                     >
                       Spreadsheetを開く
                     </button>

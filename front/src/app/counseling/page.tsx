@@ -61,7 +61,7 @@ export default function Counseling() {
                   <div className="flex flex-col p-6 bg-white rounded-lg border border-gray-300 shadow flex-grow">
                     {" "}
                     {/* flex-growでカードの高さを揃える */}
-                    <h2 className="font-extrabold mb-3 text-[#DD6E00]">
+                    <h2 className="text-lg font-extrabold mb-3 text-[#DD6E00]">
                       サービス内容
                     </h2>
                     <p className="text-gray-600 flex-grow">
@@ -75,7 +75,7 @@ export default function Counseling() {
                 {/* サービス2 */}
                 <div className="flex flex-col w-72">
                   <div className="flex flex-col p-6 bg-white rounded-lg border border-gray-300 shadow flex-grow">
-                    <h2 className="font-extrabold mb-3 text-[#DD6E00]">
+                    <h2 className="text-lg font-extrabold mb-3 text-[#DD6E00]">
                       カウンセラーについて
                     </h2>
                     <p className="text-gray-600 flex-grow">
@@ -87,7 +87,7 @@ export default function Counseling() {
                 {/* サービス3 */}
                 <div className="flex flex-col w-72">
                   <div className="flex flex-col p-6 bg-white rounded-lg border border-gray-300 shadow flex-grow">
-                    <h2 className="font-extrabold mb-3 text-[#DD6E00]">
+                    <h2 className="text-lg font-extrabold mb-3 text-[#DD6E00]">
                       価格・営業時間について
                     </h2>
                     <p className="text-gray-600 flex-grow">

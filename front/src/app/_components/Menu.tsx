@@ -7,6 +7,7 @@ import { faCalendar } from "@fortawesome/free-regular-svg-icons";
 import { faHandHoldingDollar } from "@fortawesome/free-solid-svg-icons";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { faArrowRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { faGear } from "@fortawesome/free-solid-svg-icons";
 import { auth } from "../firebase";
 import { useRouter } from "next/navigation";
 import { User } from "../../../@type";
@@ -28,7 +29,7 @@ const menuItems: MenuItem[] = [
     icon: <FontAwesomeIcon icon={faCalendar} style={{ fontSize: "21px" }} />,
   },
   {
-    name: "Price",
+    name: "Cost",
     href: "/price",
     icon: (
       <FontAwesomeIcon
@@ -41,6 +42,11 @@ const menuItems: MenuItem[] = [
     name: "Counseling",
     href: "/counseling",
     icon: <FontAwesomeIcon icon={faHeart} style={{ fontSize: "21px" }} />,
+  },
+  {
+    name: "Dashboard",
+    href: "/dashboard",
+    icon: <FontAwesomeIcon icon={faGear} style={{ fontSize: "21px" }} />,
   },
   {
     name: "Logout",
@@ -58,7 +64,7 @@ export default function Menu(props: MenuProps) {
   const [activeMenuItem, setActiveMenuItem] = useState<string | null>(null);
   const router = useRouter();
 
-  // ログインボタンを押したときの処理
+  // ログアウトボタンを押したときの処理
   const handleClick = (href: string) => {
     if (href === "/logout") {
       auth
@@ -83,20 +89,18 @@ export default function Menu(props: MenuProps) {
   return (
     <div className="menu-container shadow-md h-full bg-[#EDCE7A]">
       {/* 管理画面 プロフィール */}
-      <div className="flex flex-col justify-center items-center w-full mb-5 px-12 py-10 bg-[#EDCE7A]">
-        <Link href={"/dashboard"}>
-          <div className="avatar mr-3">
-            <Image
-              src="/img/profile.svg"
-              alt="Avatar"
-              width={200}
-              height={200}
-              className="rounded-full hover:opacity-80"
-            />
-          </div>
-        </Link>
+      <div className="flex flex-col justify-center items-center w-full px-12 py-10 bg-[#EDCE7A]">
+        <div className="avatar mr-3">
+          <Image
+            src="/img/profile.svg"
+            alt="Avatar"
+            width={200}
+            height={200}
+            className="rounded-full"
+          />
+        </div>
         <div className="flex flex-col items-center">
-          <h3 className="text-lg font-bold mt-3 text-white">
+          <h3 className="text-lg font-bold mt-2 text-white">
             {props.user?.name}
           </h3>
           <p className="text-sm mt-2 text-white">
@@ -106,8 +110,8 @@ export default function Menu(props: MenuProps) {
       </div>
 
       {/* メニュー */}
-      <div className="flex flex-col items-center mt-6 text-white">
-        <nav className="menu bg-[#EDCE7A] p-3 rounded-lg">
+      <div className="flex flex-col items-center text-white">
+        <nav className="menu bg-[#EDCE7A] rounded-lg">
           {menuItems.map((item, index) =>
             // Logoutの項目だけ特別な処理を行う
             item.name === "Logout" ? (
