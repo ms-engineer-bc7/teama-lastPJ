@@ -71,7 +71,7 @@ export default function PartnerMenu(props: MenuProps) {
   return (
     <div className="menu-container shadow-md h-full bg-[#adcdd0]">
       {/* 管理画面 プロフィール */}
-      <div className="flex flex-col justify-center items-center w-full mb-5 px-12 py-10">
+      <div className="flex flex-col justify-center items-center w-full px-12 py-10">
         <div className="avatar mr-3">
           <Image
             src="/img/profile_partner.svg"
@@ -92,7 +92,7 @@ export default function PartnerMenu(props: MenuProps) {
       </div>
 
       {/* メニュー */}
-      <div className="flex flex-col items-center mt-6 text-white">
+      <div className="flex flex-col items-center text-white">
         <nav className="menu bg-[#adcdd0] p-3 rounded-lg">
           {menuItems.map((item, index) =>
             // Logoutの項目だけ特別な処理を行う
