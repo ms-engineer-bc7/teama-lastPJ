@@ -1,11 +1,43 @@
+"use client";
+import React, { useState, useEffect } from "react";//
+import { useRouter } from "next/navigation";
+import { auth } from "../firebase";//
+import { useAuthState } from "react-firebase-hooks/auth";//
+import { getUserInfo } from "../fetch";//
+import { User } from "../../../@type";//
 import PartnerMenu from "../_components/PartnerMenu";
 
 export default function PartnerCounseling() {
+  const router = useRouter();//
+  const [authUser] = useAuthState(auth);//
+  const [user, setUser] = useState<User>();//
+  const [isLoading, setIsLoading] = useState(false);//
+  const [name, setName] = useState<string>("");//
+
+  //ログインしているユーザー名の取得・メニューバーに表示
+  // return文　<div>で囲み<Menu user={user}/>を入れる
+  useEffect(() => {
+    if (!authUser) return; //authUserがnullまたは未定義の場合、何もしない
+    getUserInfo(authUser)
+      .then(async (res) => {
+        const data = await res.json();
+        setUser(data);
+        setName(data.name);
+        console.log("ログイン中のユーザー名:",data.name); //ログイン中のユーザー名確認
+        if (data.role == "") router.push("/role");
+        // if (data.role == "partner") router.push("/partner");　 //パートナーはコメントアウト
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error("ユーザー情報取得エラー:", err);
+      });
+    },[authUser]) //authUserにすることでリロードしても表示される
+
   return (
     <>
       <div className="flex w-full">
         <div className="flex-shrink-0 sticky top-0">
-          <PartnerMenu />
+          <PartnerMenu user={user}/>
         </div>
 
         {/* カウンセリング */}
