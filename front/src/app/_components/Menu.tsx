@@ -30,7 +30,7 @@ const menuItems: MenuItem[] = [
   },
   {
     name: "Cost",
-    href: "/price",
+    href: "/cost",
     icon: (
       <FontAwesomeIcon
         icon={faHandHoldingDollar}
