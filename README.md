@@ -18,22 +18,22 @@ https://github.com/ms-engineer-bc7/teama-lastPJ/assets/141146509/76dc276f-093e-4
 - スケジュールのスプレッドシート連携
 
 ## 使い方
-1.リポジトリのクローン
+1. リポジトリのクローン
 ```
 $ git clone https://github.com/ms-engineer-bc7/teama-lastPJ.git
 ```
 
-2.ルートディレクトリへ移動
+2. ルートディレクトリへ移動
 ```
 $ cd teama-lastPJ
 ```
 
-3.dockerコマンドを入力
+3. dockerコマンドを入力
 ```
 $ docker compose up --build -d
 ```
 
-4.アプリにアクセスする
+4. アプリにアクセスする
 ```
 http://localhost:3000/login
 ```
