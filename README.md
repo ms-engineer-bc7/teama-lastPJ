@@ -47,8 +47,8 @@ http://localhost:3000/login
 - Node.js: 20.11.1
 - Tailwind CSS: 3.4.3
 - Python: 3.12.2
-- Django:
-- PostgreSQL:
+- Django: 5.0.4
+- PostgreSQL: 16.2
 - Firebase: 10.11.0
 - Stripe
 - Docker: 25.0.3
