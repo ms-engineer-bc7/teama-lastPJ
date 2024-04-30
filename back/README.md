@@ -2,32 +2,31 @@
 
 ### ユーザー情報（User）
 
-- id (主キー)
-- name (ユーザー名)
-- email (メールアドレス)
-- password (パスワード)
-- role (役割、例：ユーザー、パートナー、人事)
+- uid (Firebase の Uid、NULL 許容)
+- name (ユーザー名、デフォルト空文字)
+- email (メールアドレス、ユニーク)
+- role (役割、選択肢：'user' - '女性'、'partner' - 'パートナー'、空白許容)
+- partner_id (外部キー、自己参照の OneToOne、NULL 許容)
 
 ### 予定管理（Event）
 
-- id (主キー)
 - user_id (外部キー、Users にリンク)
 - title (イベントタイトル)
-- description (説明)
-- tag (色分け)
-- start_date (開始日)
-- end_date (終了日)
+- description (説明、NULL 許容)
+- tag (タグ、NULL 許容)
+- start_date (開始日時)
+- end_date (終了日時)
 - hide_from_hr (ブール型、人事から隠すかどうか)
-- alert_message_for_u (アラートメッセージ) ユーザー用
-- alert_message_for_p (アラートメッセージ) パートナー用
-- alert_time (アラートの時間) - いつユーザーに通知を送るか
+- alert_message_for_u (アラートメッセージ、ユーザー用、NULL 許容)
+- alert_message_for_p (アラートメッセージ、パートナー用、NULL 許容)
+- alert_time (アラートの時間、NULL 許容)
 
 ### 金額の目安（Cost）
 
 - id (主キー)
 - treatment_type (治療の種類、例：検査、注射、採卵、培養、人工授精、体外受精)
-- insurance_coverage (保険適用内容)
-- cost_details (金額内訳)
+- insurance_coverage (保険適用内容、NULL 許容)
+- cost_details (金額内訳、NULL 許容)
 - total_cost (合計金額)
 
 ### FAQ（FAQ）
@@ -35,14 +34,21 @@
 - id (主キー)
 - question (質問)
 - answer (回答)
-- created_at (作成日時)
+- created_at (作成日時、自動追加)
 
 ### 経験談（Testimonial）
 
 - id (主キー)
 - tag (タグ)
 - content (経験談の内容)
-- created_at (作成日時)
+- created_at (作成日時、自動追加)
+
+### スプレッドシート情報（SpreadSheet）
+
+- id (主キー)
+- user_id (外部キー、Users にリンク)
+- sheet_id (スプレッドシートの ID、NULL 許容)
+- shared_email (共有されたメールアドレス)
 
 #### ER 図
 
