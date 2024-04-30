@@ -19,7 +19,6 @@ export interface Event {
   alert_message_for_p: string;
 }
 
-
 // _components/ModalPartner.tsx
 export interface ModalPartnerProps {
   isOpen: boolean;
