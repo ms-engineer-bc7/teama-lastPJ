@@ -49,6 +49,8 @@ export default function Calendar() {
     alert_message_for_p: "",
   });
 
+  // GET
+  // ユーザー情報を取得、イベントデータ取得
   const fetchData = async () => {
     getUserInfo(authUser)
       .then(async (res) => {
@@ -58,6 +60,7 @@ export default function Calendar() {
         if (data.role == "partner") router.push("/partner");
         const events = await getFetchData(authUser?.accessToken);
         console.log("getした値(event)", events);
+        console.log("アクセストークン", authUser?.accessToken);
         setEvents(events);
         setIsLoading(false);
       })
@@ -66,7 +69,6 @@ export default function Calendar() {
       });
   };
 
-  // GET の処理
   useEffect(() => {
     setIsLoading(true);
     if (!authUser) return;
