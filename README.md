@@ -1,7 +1,7 @@
 # Sharecle
 Sharecle（シェアクル）は、不妊治療をサポートするアプリケーションです。
 
-[![oembed](https://speakerdeck.com/ym902/sharecle-sieakuru-nopurezenzi-liao)
+[![Presentation](https://speakerd.s3.amazonaws.com/presentations/ym902/abcdef1234567890/slide_1.jpg)](https://speakerdeck.com/ym902/sharecle-sieakuru-nopurezenzi-liao)
 
 https://github.com/ms-engineer-bc7/teama-lastPJ/assets/141146509/76dc276f-093e-4dfd-811f-70b3933ea8ae
 
