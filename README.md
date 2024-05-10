@@ -54,4 +54,4 @@ http://localhost:3000/login
 - OpenAI API: GPT-3.5
 
 ## タスク管理、共有事項等
-Notion: https://volcano-lightning-92e.notion.site/Team-A-983c676525bc4b0aae59531a713d4e3d?pvs=4
+[Notion](https://volcano-lightning-92e.notion.site/Team-A-983c676525bc4b0aae59531a713d4e3d?pvs=4)
