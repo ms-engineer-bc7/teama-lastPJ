@@ -273,17 +273,6 @@ export default function Dashboard() {
                   {/* {user?.name ? "変更" : "追加"} */}
                   <FontAwesomeIcon icon={faPencil} size="lg" />
                 </button>
-                {/* <button
-                  className={
-                    (user?.name
-                      ? "bg-gray-500 hover:bg-gray-600"
-                      : "bg-blue-500 hover:bg-blue-600") +
-                    " text-white font-bold py-2 px-4 rounded mr-2 w-24 mx-3"
-                  }
-                  onClick={handleOpenNameModal}
-                >
-                  {user?.name ? "変更" : "追加"}
-                </button> */}
               </div>
             </div>
 
@@ -304,7 +293,6 @@ export default function Dashboard() {
                   }
                   onClick={handleOpenPartnerModal}
                 >
-                  {/* {user?.partner_email ? "変更" : "追加"} */}
                   <FontAwesomeIcon icon={faPencil} size="lg" />
                 </button>
               </div>

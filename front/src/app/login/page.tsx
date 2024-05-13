@@ -54,7 +54,6 @@ export default function Login() {
     <div className="flex min-h-screen w-full">
       {/* 左側画像 */}
       <div className="h-screen w-5/12 overflow-hidden flex-shrink-0">
-        {/* <div className="h-screen overflow-hidden flex-shrink-0"> */}
         <img
           src="/img/login.png"
           alt=""
@@ -95,11 +94,6 @@ export default function Login() {
         >
           Google で 新規登録 &emsp; / &emsp; ログイン
         </button>
-
-        {/* トップページへ */}
-        {/* <p>
-          <Link href="/">トップページに戻る</Link>
-        </p> */}
       </div>
     </div>
   );

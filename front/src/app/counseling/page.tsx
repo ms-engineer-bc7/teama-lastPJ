@@ -1,18 +1,18 @@
 "use client";
-import React, { useState, useEffect } from "react";//
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { auth } from "../firebase";//
-import { useAuthState } from "react-firebase-hooks/auth";//
-import { getUserInfo } from "../fetch";//
-import { User } from "../../../@type";//
+import { auth } from "../firebase";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { getUserInfo } from "../fetch";
+import { User } from "../../../@type";
 import Menu from "../_components/Menu";
 
 export default function Counseling() {
-  const router = useRouter();//
-  const [authUser] = useAuthState(auth);//
-  const [user, setUser] = useState<User>();//
-  const [isLoading, setIsLoading] = useState(false);//
-  const [name, setName] = useState<string>("");//
+  const router = useRouter();
+  const [authUser] = useAuthState(auth);
+  const [user, setUser] = useState<User>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [name, setName] = useState<string>("");
 
   // ユーザー名の取得・メニューバーに表示
   // return文　<div>で囲み<Menu user={user}/>を入れる
