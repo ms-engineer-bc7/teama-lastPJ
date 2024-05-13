@@ -15,7 +15,7 @@ export default function PartnerCounseling() {
   const [name, setName] = useState<string>("");//
 
   //ログインしているユーザー名の取得・メニューバーに表示
-  // return文　<div>で囲み<Menu user={user}/>を入れる
+  // return文 <div>で囲み<Menu user={user}/>を入れる
   useEffect(() => {
     if (!authUser) return; //authUserがnullまたは未定義の場合、何もしない
     getUserInfo(authUser)
