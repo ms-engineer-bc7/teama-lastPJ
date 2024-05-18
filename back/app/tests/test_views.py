@@ -1,9 +1,9 @@
 from django.test import TestCase, RequestFactory
 from django.conf import settings
 from rest_framework.test import APIClient
-from .views import EventViewSet
-from .serializers import EventSerializer  
-from .models import Event  
+from ..views import EventViewSet
+from ..serializers import EventSerializer  
+from ..models import Event  
 
 class EventViewSetTestCase(TestCase):
     def setUp(self):
